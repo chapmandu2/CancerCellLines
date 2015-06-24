@@ -1,0 +1,61 @@
+CCLE name	Cell line primary name	Cell line aliases	Gender	Site Primary	Histology	Hist Subtype1	Notes	Source	Expression arrays	SNP arrays	Oncomap	Hybrid Capture Sequencing
+AU565_BREAST	AU565		F	breast	carcinoma	NS	Metastatic pair: SK-BR-3 and AU565 are from the same patient	ATCC	CASED_p_NCLE_RNA4_HG-U133_Plus_2_B02_383772	FASTS_p_NCLE_DNAAffy4_S_GenomeWideSNP_6_C05_335244	yes	yes
+BT20_BREAST	BT-20		F	breast	carcinoma	ductal_carcinoma		ATCC	CASED_p_NCLE_RNA4_HG-U133_Plus_2_C02_383640	FASTS_p_NCLE_DNAAffy4_S_GenomeWideSNP_6_F06_335318	yes	yes
+BT474_BREAST	BT-474		F	breast	carcinoma	ductal_carcinoma		ATCC	NIECE_p_NCLE_RNA3_HG-U133_Plus_2_E07_296098	HONEY_p_NCLE_DNAAffy3_S_GenomeWideSNP_6_B12_293326	yes	yes
+BT483_BREAST	BT-483		F	breast	carcinoma	ductal_carcinoma		ATCC	WATCH_p_NCLE_RNA8_HG-U133_Plus_2_A08_474686	BOWER_p_NCLE_DNAAffy8_GenomeWideSNP_6_B06_464594	yes	yes
+BT549_BREAST	BT-549		F	breast	carcinoma	ductal_carcinoma		ATCC	PARES_p_NCLE_RNA_Redo_HG-U133_Plus_2_A09_257614	ARLES_p_NCLE_DNAAffy2_S_GenomeWideSNP_6_B08_256040	yes	yes
+CAL120_BREAST	CAL-120		F	breast	carcinoma	NS		DSMZ	WATCH_p_NCLE_RNA8_HG-U133_Plus_2_H01_474610	CHARY_p_NCLE_DNAAffy9_GenomeWideSNP_6_G06_490466	yes	yes
+CAL148_BREAST	CAL-148		F	breast	carcinoma	ductal_carcinoma		DSMZ	SILOS_p_NCLE_RNA9_HG-U133_Plus_2_D02_523558	VAULT_p_NCLE_DNAAffy14_GenomeWideSNP_6_E11_698682	yes	yes
+CAL51_BREAST	CAL-51		F	breast	carcinoma	NS		DSMZ	WATCH_p_NCLE_RNA8_HG-U133_Plus_2_F02_474714	CHARY_p_NCLE_DNAAffy9_GenomeWideSNP_6_C10_490500	yes	yes
+CAL851_BREAST	CAL-85-1		F	breast	carcinoma	NS		DSMZ	PARES_p_NCLE_RNA_Redo_HG-U133_Plus_2_A11_257618	ARLES_p_NCLE_DNAAffy2_S_GenomeWideSNP_6_B04_256032	yes	yes
+CAMA1_BREAST	CAMA-1		F	breast	carcinoma	NS		ATCC	BUNDS_p_NCLE_RNA5_HG-U133_Plus_2_F09_419786	PODIA_p_NCLE_DNAAffy7_GenomeWideSNP_6_A08_437580	yes	yes
+DU4475_BREAST	DU4475		F	breast	carcinoma	ductal_carcinoma		ATCC	AGENT_p_NCLE_RNA6_HG-U133_Plus_2_F10_436454	FIEFS_p_NCLE_DNA_Affy5_GenomeWideSNP_6_C01_411060	yes	yes
+EFM192A_BREAST	EFM-192A		F	breast	carcinoma	NS		DSMZ	METIS_p_NCLE_RNA1_Human_U133_Plus_2.0_B11_240894	LIMPS_p_NCLE_DNA2N_GenomeWideSNP_6_H09_246794	yes	yes
+EFM19_BREAST	EFM-19		F	breast	carcinoma	ductal_carcinoma		DSMZ	NIECE_p_NCLE_RNA3_HG-U133_Plus_2_A05_295998	LIMPS_p_NCLE_DNA2N_GenomeWideSNP_6_E11_246726	yes	yes
+EVSAT_BREAST	EVSA-T		F	breast	carcinoma	NS		DSMZ	METIS_p_NCLE_RNA1_Human_U133_Plus_2.0_D05_240930	ARLES_p_NCLE_DNAAffy2_S_GenomeWideSNP_6_C08_256064	yes	yes
+HCC1143_BREAST	HCC1143		F	breast	carcinoma	ductal_carcinoma		ATCC	CASED_p_NCLE_RNA4_HG-U133_Plus_2_E02_383668	FIEFS_p_NCLE_DNA_Affy5_GenomeWideSNP_6_B11_410900	yes	yes
+HCC1187_BREAST	HCC1187		F	breast	carcinoma	ductal_carcinoma		ATCC	CASED_p_NCLE_RNA4_HG-U133_Plus_2_G09_383594	LOBBY_p_NCLE_DNAAffy6_GenomeWideSNP_6_B11_437316	yes	yes
+HCC1395_BREAST	HCC1395		F	breast	carcinoma	ductal_carcinoma		ATCC	CASED_p_NCLE_RNA4_HG-U133_Plus_2_E12_383706	FASTS_p_NCLE_DNAAffy4_S_GenomeWideSNP_6_H12_335378	yes	yes
+HCC1419_BREAST	HCC1419		F	breast	carcinoma	ductal_carcinoma		ATCC	WATCH_p_NCLE_RNA8_HG-U133_Plus_2_A07_474600	BOWER_p_NCLE_DNAAffy8_GenomeWideSNP_6_A08_464616	yes	yes
+HCC1428_BREAST	HCC1428		F	breast	carcinoma	NS		ATCC	WATCH_p_NCLE_RNA8_HG-U133_Plus_2_A12_474732	VAULT_p_NCLE_DNAAffy14_GenomeWideSNP_6_F08_698666	yes	yes
+HCC1500_BREAST	HCC1500		F	breast	carcinoma	ductal_carcinoma		ATCC	SILOS_p_NCLE_RNA9_HG-U133_Plus_2_D09_523496	BOWER_p_NCLE_DNAAffy8_GenomeWideSNP_6_A04_464624	yes	yes
+HCC1569_BREAST	HCC1569		F	breast	carcinoma	metaplastic_carcinoma		ATCC	CASED_p_NCLE_RNA4_HG-U133_Plus_2_E06_383684	VAULT_p_NCLE_DNAAffy14_GenomeWideSNP_6_G07_698658	yes	yes
+HCC1599_BREAST	HCC1599		F	breast	carcinoma	ductal_carcinoma		ATCC	SILOS_p_NCLE_RNA9_HG-U133_Plus_2_D10_523634	BOWER_p_NCLE_DNAAffy8_GenomeWideSNP_6_H11_464630	yes	yes
+HCC1806_BREAST	HCC1806		F	breast	carcinoma	ductal_carcinoma		ATCC	SILOS_p_NCLE_RNA9_HG-U133_Plus_2_A05_523512	FIEFS_p_NCLE_DNA_Affy5_GenomeWideSNP_6_B05_410888	yes	yes
+HCC1937_BREAST	HCC1937		F	breast	carcinoma	ductal_carcinoma		ATCC	CASED_p_NCLE_RNA4_HG-U133_Plus_2_E05_383680	LOBBY_p_NCLE_DNAAffy6_GenomeWideSNP_6_B04_437302	yes	
+HCC1954_BREAST	HCC1954		F	breast	carcinoma	ductal_carcinoma		ATCC	BUNDS_p_NCLE_RNA5_HG-U133_Plus_2_F08_419788	PODIA_p_NCLE_DNAAffy7_GenomeWideSNP_6_A04_437564	yes	yes
+HCC202_BREAST	HCC202		F	breast	carcinoma	ductal_carcinoma		ATCC	MAKER_p_NCLE_RNA7_HG-U133_Plus_2_G10_454732	LOBBY_p_NCLE_DNAAffy6_GenomeWideSNP_6_B12_437318	yes	yes
+HCC2157_BREAST	HCC2157		F	breast	carcinoma	ductal_carcinoma		ATCC	AGENT_p_NCLE_RNA6_HG-U133_Plus_2_B01_436616	BOWER_p_NCLE_DNAAffy8_GenomeWideSNP_6_A07_464618	yes	yes
+HCC2218_BREAST	HCC2218		F	breast	carcinoma	ductal_carcinoma		ATCC	BUNDS_p_NCLE_RNA5_HG-U133_Plus_2_B03_419876	PODIA_p_NCLE_DNAAffy7_GenomeWideSNP_6_A05_437578	yes	yes
+HCC38_BREAST	HCC38		F	breast	carcinoma	ductal_carcinoma		ATCC	AGENT_p_NCLE_RNA6_HG-U133_Plus_2_F09_436452	FIEFS_p_NCLE_DNA_Affy5_GenomeWideSNP_6_H06_410918	yes	yes
+HCC70_BREAST	HCC70		F	breast	carcinoma	ductal_carcinoma		ATCC	MAKER_p_NCLE_RNA7_HG-U133_Plus_2_C07_454622	FIEFS_p_NCLE_DNA_Affy5_GenomeWideSNP_6_G03_410962	yes	yes
+HDQP1_BREAST	HDQ-P1		F	breast	carcinoma	ductal_carcinoma		DSMZ	SILOS_p_NCLE_RNA9_HG-U133_Plus_2_H05_523478	CHARY_p_NCLE_DNAAffy9_GenomeWideSNP_6_E02_490412	yes	
+HMC18_BREAST	HMC-1-8		F	breast	carcinoma	NS	Identical lines: HMC-1-8 and HLC-1 share high SNP identity and are probably lung.	HSRRB	BUNDS_p_NCLE_RNA5_HG-U133_Plus_2_H08_419840	PODIA_p_NCLE_DNAAffy7_GenomeWideSNP_6_A10_437568	yes	yes
+HMEL_BREAST	HMEL			breast	other	immortalized_epithelial		Academic Lab / Achilles	RILLS_p_AchillesExp_Mar2011_1_HG-U133_Plus_2_A04_767910	EPHOR_p_NCLE_Achilles_DNAAffy15_GenomeWideSNP_6_G07_780268		
+HS274T_BREAST	Hs 274.T		F	breast	carcinoma	NS		ATCC	WATCH_p_NCLE_RNA8_HG-U133_Plus_2_B05_474706	AWASH_p_NCLE_DNAAffy10_GenomeWideSNP_6_C04_542930	yes	
+HS281T_BREAST	Hs 281.T		F	breast	carcinoma	NS		ATCC	WATCH_p_NCLE_RNA8_HG-U133_Plus_2_A09_474590	AWASH_p_NCLE_DNAAffy10_GenomeWideSNP_6_D05_542840	yes	yes
+HS343T_BREAST	Hs 343.T		F	breast	carcinoma	NS		ATCC	WATCH_p_NCLE_RNA8_HG-U133_Plus_2_D01_474640	MISTS_p_NCLE_DNAAffy11_GenomeWideSNP_6_G05_578300	yes	yes
+HS578T_BREAST	Hs 578T		F	breast	carcinoma	ductal_carcinoma		ATCC	CASED_p_NCLE_RNA4_HG-U133_Plus_2_C01_383628	FASTS_p_NCLE_DNAAffy4_S_GenomeWideSNP_6_F02_335310	yes	yes
+HS606T_BREAST	Hs 606.T		F	breast	carcinoma	NS		ATCC	NIECE_p_NCLE_RNA3_HG-U133_Plus_2_H08_296172	LOBBY_p_NCLE_DNAAffy6_GenomeWideSNP_6_A11_437328	yes	
+HS739T_BREAST	Hs 739.T		F	breast	carcinoma	NS		ATCC	AGENT_p_NCLE_RNA6_HG-U133_Plus_2_E11_436480	LOBBY_p_NCLE_DNAAffy6_GenomeWideSNP_6_D01_437282	yes	yes
+HS742T_BREAST	Hs 742.T		F	breast	carcinoma	NS		ATCC	BITTS_p_NCLE_RNA12_HG-U133_Plus_2_A01_698800	MISTS_p_NCLE_DNAAffy11_GenomeWideSNP_6_E08_578426	yes	yes
+JIMT1_BREAST	JIMT-1		F	breast	carcinoma	ductal_carcinoma		DSMZ	WATCH_p_NCLE_RNA8_HG-U133_Plus_2_H09_474734	CHARY_p_NCLE_DNAAffy9_GenomeWideSNP_6_B07_490458	yes	yes
+KPL1_BREAST	KPL-1		F	breast	carcinoma	ductal_carcinoma	Identical lines: MCF-7 and KPL-1 share high SNP identity	DSMZ	BITTS_p_NCLE_RNA12_HG-U133_Plus_2_A12_698746	VAULT_p_NCLE_DNAAffy14_GenomeWideSNP_6_E09_698572	yes	yes
+MB157_BREAST	MB 157		F	breast	carcinoma	NS		ATCC			yes	
+MCF7_BREAST	MCF7		F	breast	carcinoma	NS	Identical lines: MCF-7 and KPL-1 share high SNP identity	ATCC	MAKER_p_NCLE_RNA7_HG-U133_Plus_2_G05_454738	PODIA_p_NCLE_DNAAffy7_GenomeWideSNP_6_B09_437556	yes	yes
+MDAMB134VI_BREAST	MDA-MB-134-VI		F	breast	carcinoma	ductal_carcinoma		ATCC	SILOS_p_NCLE_RNA9_HG-U133_Plus_2_D08_523486	SKATS_p_NCLE_DNAAffy13_GenomeWideSNP_6_B09_592874	yes	yes
+MDAMB157_BREAST	MDA-MB-157	MB 157	F	breast	carcinoma	ductal_carcinoma		ATCC	MAKER_p_NCLE_RNA7_HG-U133_Plus_2_H12_454750	LOBBY_p_NCLE_DNAAffy6_GenomeWideSNP_6_D06_437288	yes	
+MDAMB175VII_BREAST	MDA-MB-175-VII		F	breast	carcinoma	ductal_carcinoma		ATCC	AGENT_p_NCLE_RNA6_HG-U133_Plus_2_G03_436510	LOBBY_p_NCLE_DNAAffy6_GenomeWideSNP_6_D07_437294	yes	
+MDAMB231_BREAST	MDA-MB-231		F	breast	carcinoma	NS		ATCC	BRAKE_p_NCLE_RNA2_HG-U133_Plus_2_A01_241042	LIMPS_p_NCLE_DNA2N_GenomeWideSNP_6_G12_246776	yes	yes
+MDAMB361_BREAST	MDA-MB-361		F	breast	carcinoma	NS		ATCC	CASED_p_NCLE_RNA4_HG-U133_Plus_2_C08_383600	FASTS_p_NCLE_DNAAffy4_S_GenomeWideSNP_6_F11_335328	yes	yes
+MDAMB415_BREAST	MDA-MB-415		F	breast	carcinoma	NS		ATCC	NIECE_p_NCLE_RNA3_HG-U133_Plus_2_H09_296174	FASTS_p_NCLE_DNAAffy4_S_GenomeWideSNP_6_C09_335252	yes	yes
+MDAMB436_BREAST	MDA-MB-436		F	breast	carcinoma	NS		ATCC	CASED_p_NCLE_RNA4_HG-U133_Plus_2_C09_383596	FASTS_p_NCLE_DNAAffy4_S_GenomeWideSNP_6_F10_335326	yes	yes
+MDAMB453_BREAST	MDA-MB-453		F	breast	carcinoma	NS		ATCC	METIS_p_NCLE_RNA1_Human_U133_Plus_2.0_H10_241036	ARLES_p_NCLE_DNAAffy2_S_GenomeWideSNP_6_D12_256096	yes	yes
+MDAMB468_BREAST	MDA-MB-468		F	breast	carcinoma	NS		ATCC	PARES_p_NCLE_RNA_Redo_HG-U133_Plus_2_A02_257600	LIMPS_p_NCLE_DNA2N_GenomeWideSNP_6_F07_246742	yes	yes
+SKBR3_BREAST	SK-BR-3		F	breast	carcinoma	NS	Metastatic pair: SK-BR-3 and AU565 are from the same patient	ATCC	CASED_p_NCLE_RNA4_HG-U133_Plus_2_D06_383700	FASTS_p_NCLE_DNAAffy4_S_GenomeWideSNP_6_G03_335336	yes	yes
+T47D_BREAST	T-47D		F	breast	carcinoma	ductal_carcinoma		ATCC	AGENT_p_NCLE_RNA6_HG-U133_Plus_2_H12_436432	PODIA_p_NCLE_DNAAffy7_GenomeWideSNP_6_D03_437522	yes	yes
+UACC812_BREAST	UACC-812		F	breast	carcinoma	ductal_carcinoma		ATCC	SILOS_p_NCLE_RNA9_HG-U133_Plus_2_C01_523502	BOWER_p_NCLE_DNAAffy8_GenomeWideSNP_6_F03_464690	yes	yes
+UACC893_BREAST	UACC-893		F	breast	carcinoma	ductal_carcinoma		ATCC	SILOS_p_NCLE_RNA9_HG-U133_Plus_2_E11_523470	VAULT_p_NCLE_DNAAffy14_GenomeWideSNP_6_F07_698652	yes	yes
+YMB1_BREAST	YMB-1		F	breast	carcinoma	NS	Identical lines: ZR-75-1 and YMB-1 share high SNP identity	HSRRB	AGENT_p_NCLE_RNA6_HG-U133_Plus_2_H01_436482	PODIA_p_NCLE_DNAAffy7_GenomeWideSNP_6_A11_437574	yes	
+ZR751_BREAST	ZR-75-1		F	breast	carcinoma	ductal_carcinoma	Identical lines: ZR-75-1 and YMB-1 share high SNP identity	ATCC	MAKER_p_NCLE_RNA7_HG-U133_Plus_2_C04_454614	FIEFS_p_NCLE_DNA_Affy5_GenomeWideSNP_6_H09_410932	yes	yes
+ZR7530_BREAST	ZR-75-30		F	breast	carcinoma	ductal_carcinoma		ATCC	WATCH_p_NCLE_RNA8_HG-U133_Plus_2_B07_474632	BOWER_p_NCLE_DNAAffy8_GenomeWideSNP_6_E10_464710	yes	yes
