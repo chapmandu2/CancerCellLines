@@ -1,8 +1,10 @@
 #functions to import raw text files to a SQLite database
 
+#setupSQLite <- function ( dbpath=system.file('extdata/toy.db', package="CancerCellLines") ) {
 setupSQLite <- function ( dbpath ) {
   require(RSQLite)
   #dbpath <- '~/BigData/CellLineData/CancerCellLines.db'
+  dbpath <- system.file('extdata/toy.db', package="CancerCellLines")
   drv <- dbDriver("SQLite")
   con <- dbConnect(drv, dbname = dbpath)
   return(con)
