@@ -129,3 +129,54 @@ The full CCLE dataset is not included in this package due to reasons of data siz
 
 To Be Added!!!
 
+Define where the data is to be stored/found.  Files downloaded from the [CCLE project website](http://www.broadinstitute.org/ccle/data/browseData?conversationPropagation=begin).  
+
+```{r eval=FALSE}
+dbpath <- '~/BigData/CellLineData/CancerCellLines.db'
+infopath <- '~/BigData/CellLineData/RawData/CCLE_sample_info_file_2012-10-18.txt'
+affypath <- '~/BigData/CellLineData/RawData/CCLE_Expression_Entrez_2012-09-29.gct'
+hybcappath <- '~/BigData/CellLineData/RawData/CCLE_hybrid_capture1650_hg19_NoCommonSNPs_NoNeutralVariants_CDS_2012.05.07.xlsx'
+drugpath <- '~/BigData/CellLineData/RawData/CCLE_NP24.2009_Drug_data_2012.02.20.csv'
+
+```
+Set up the SQLite database and run the import functions
+
+```{r eval=FALSE}
+  full_con <- setupSQLite(dbpath)
+  importCCLE_info(infopath , full_con)
+  importCCLE_hybcap(hybcappath , full_con)
+  importCCLE_drugresponse(drugpath , full_con)
+  importCCLE_affy(affypath , full_con)
+  
+```
+
+This process should take 3-4 minutes with most of the time spent importing the affymetrix data.
+
+Now use the database as per the toy example.  Thanks to the speed of SQLite and the wonders of indexing, data retrieval should still be just as fast even though the ccle_affy table contains around 20 million data points.
+
+To really put it through its paces try retrieving data from 2000 genes in 200 cell lines as below:
+
+```{r eval=FALSE}
+    dplyr_con <- src_sqlite(full_con@dbname)
+    
+    #get 2000 random genes
+    random_genes <- dplyr_con %>% tbl('ccle_affy') %>% dplyr::select(Symbol) %>%
+      distinct %>% collect %>% sample_n(2000) %>% as.data.frame
+    random_genes <- random_genes$Symbol
+  
+    #get 200 random cell lines
+    random_cell_lines <- dplyr_con %>% tbl('ccle_sampleinfo') %>% dplyr::select(CCLE_name) %>%
+      distinct %>% collect %>% sample_n(200) %>% as.data.frame
+    random_cell_lines <- random_cell_lines$CCLE_name
+    
+    #retrieve the data
+    test_affy <- getAffyData(full_con, random_genes, random_cell_lines)
+  
+```
+
+This should take no more than 5 seconds depending on your hardware.
+
+## Future directions
+
+Future plans are to integrate the thinking of using SQLite for fast on disk subsetting and retrieval with the biocMultiAssay package.  The will allow generic extension of the concept to other datasets without having to define import and retrieval functions and database schemas one dataset at a time. 
+
