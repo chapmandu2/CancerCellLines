@@ -29,7 +29,7 @@ list.files(system.file("extdata", package = "CancerCellLines"))
 ## Creating/Connecting to the toy dataset
 
 Either make a toy database from scratch using the convenience function `makeToyDB`:
-```{r eval=FALSE}
+```{r eval=TRUE}
 test_db <- makeToyDB()
 test_db
 test_db@dbname
@@ -37,7 +37,8 @@ dbListTables(test_db)
 ```
 
 Or connect to the one built into the package using the `setupSQLite` function:
-```{r}
+NOTE: this section doesn't work since the toy.db is too big for github!!
+```{r eval=FALSE}
 test_db <- setupSQLite(system.file('extdata/toy.db', package="CancerCellLines"))
 test_db
 test_db@dbname
