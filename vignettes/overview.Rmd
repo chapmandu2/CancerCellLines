@@ -1,0 +1,131 @@
+---
+title: "Overview Vignette for CancerCellLines Package"
+author: "Phil Chapman"
+date: "October 9, 2015"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Overview Vignette for CancerCellLines Package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+```{r, echo=FALSE, message=FALSE}
+library(CancerCellLines)
+```
+
+## Introduction
+The aim of the CancerCellLines package is to provide standardised code to create and extract data from a SQLite database containing the published genomic data from the Cancer Cell Line Encyclopedia and similar projects.  The reason for using a SQLite database is to allow data to be stored on disk, rather than be loaded into memory.  This is useful when the user wishes to work with small subsets of the overall dataset, for example just 10-20 genes in 80 lung cell lines.  This Vignette will cover the inital set up of the package along with some examples of its use.
+
+## Data Origin
+
+Data files referred to here can be download from the [CCLE project website](http://www.broadinstitute.org/ccle/data/browseData?conversationPropagation=begin).  
+
+There are also toy examples included in the package:
+```{r}
+list.files(system.file("extdata", package = "CancerCellLines"))
+```
+
+## Creating/Connecting to the toy dataset
+
+Either make a toy database from scratch using the convenience function `makeToyDB`:
+```{r eval=FALSE}
+test_db <- makeToyDB()
+test_db
+test_db@dbname
+dbListTables(test_db)
+```
+
+Or connect to the one built into the package using the `setupSQLite` function:
+```{r}
+test_db <- setupSQLite(system.file('extdata/toy.db', package="CancerCellLines"))
+test_db
+test_db@dbname
+dbListTables(test_db)
+```
+
+## Querying the toy dataset with RSQLite
+
+The functions from RSQLite can be used to query data in the normal way:
+```{r}
+dbGetQuery(test_db, "select * from ccle_affy limit 10")
+dbGetQuery(test_db, "select * from ccle_sampleinfo limit 10")[,1:5]
+dbGetQuery(test_db, "select Symbol, t1.CCLE_name, Signal, Site_primary, Hist_subtype1 from ccle_affy as t1 
+                      inner join ccle_sampleinfo t2 on t1.CCLE_name = t2.CCLE_name
+                      where t2.Hist_subtype1 == 'ductal_carcinoma'
+                      order by Symbol desc
+                      limit 10")
+```
+
+Indexing the database allows fast retrieval even when the dataset gets large - more later.  
+
+However, writing the SQL yourself can get inconvenient if you want to retrieve several genes or cell lines:
+
+```{r}
+dbGetQuery(test_db, "select * from ccle_affy 
+                      where symbol IN ('PTEN', 'TP53', 'BRAF' ) and 
+                            CCLE_name IN ('EFM192A_BREAST', 'MDAMB468_BREAST') 
+                      limit 10")
+
+symbols <- c('PTEN', 'TP53', 'BRAF')
+cell_lines <- c('EFM192A_BREAST', 'MDAMB468_BREAST') 
+symbols.sql <- paste(symbols, collapse="','")
+cell_lines.sql <- paste(cell_lines, collapse="','")
+
+dbGetQuery(test_db, sprintf("select * from ccle_affy 
+                      where symbol IN ('%s' ) and 
+                            CCLE_name IN ('%s') 
+                      limit 10", symbols.sql, cell_lines.sql))
+
+```
+
+## Querying the toy dataset with dplyr
+Things become much nicer if you query with dplyr, since this writes the underlying SQL for you:
+
+```{r}
+con <- src_sqlite(test_db@dbname) 
+ccle_affy <- con %>% tbl('ccle_affy')
+ccle_affy
+ccle_sampleinfo <- con %>% tbl('ccle_sampleinfo')
+ccle_sampleinfo
+
+ccle_sampleinfo %>% dplyr::select(CCLE_name, Site_primary, Hist_subtype1) %>% 
+  dplyr::filter(Hist_subtype1 == 'ductal_carcinoma') %>%
+  dplyr::inner_join(ccle_affy, by='CCLE_name') %>%
+  dplyr::arrange(desc(Symbol))
+
+ccle_affy %>% filter(symbol %in% symbols & CCLE_name %in% cell_lines)
+
+```
+
+##  Convenience functions to export data
+There are a number of convenience functions that assist in executing typical queries.  For example, the `getAffyData` function can be used to simplify the queries above still further:
+
+```{r}
+getAffyData(test_db, symbols, cell_lines)
+```
+
+Whilst the `getHybcapData` function retrieves the CCLE hybrid capture sequencing data:
+```{r}
+getHybcapData(test_db, symbols, cell_lines)
+```
+
+And the `getDrugData` function retrieves drug response data:
+```{r}
+drugs <- c('Lapatinib', 'AZD6244', 'Nilotinib' )
+getDrugData(test_db, drugs, cell_lines)
+```
+
+These functions all have a standard output format which means that data from different assay types can be merged and plotted or analysed together.
+
+Finally, there is the `make_df` function which does this merging in a standard way and returns a data frame of a type that can be used for modelling drug response based on genetic features.
+
+```{r}
+make_df(test_db, symbols, cell_lines, drugs)
+```
+
+## Working with the full CCLE dataset
+The full CCLE dataset is not included in this package due to reasons of data size and because permission for data re-distribution has not yet been sought.  However, the instructions below will demonstrate how this is done:
+
+To Be Added!!!
+

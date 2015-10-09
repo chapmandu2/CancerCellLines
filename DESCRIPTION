@@ -1,13 +1,16 @@
 Package: CancerCellLines
 Type: Package
 Title: Provides data and classes for accessing public domain cancer cell line data (short line)
-Version: 0.99.0
+Version: 0.2.0
 Date: 2015-06-20
 Author: Phil Chapman
 Maintainer: Who to complain to <phil.chapman@cruk.manchester.ac.uk>
-Description: Provides a framework for scientists working with cancer cell lines to access and analyse the data easily in R.
+Description: Provides a framework for scientists working with cancer cell lines to access and analyse the data easily in R.  Note: likely to be superceded by biocMultiAssay package!
 License: Artistic-2.0
 LazyData: TRUE
-Depends:
+Depends: R (>= 3.0.1), dplyr, readxl
 Imports:
+  DBI,
+  RSQLite,
+  reshape2
 Suggests:

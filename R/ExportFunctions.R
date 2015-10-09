@@ -1,5 +1,14 @@
 #functions to export data from sqlite db
 
+#' Extract drug response data
+#'
+#' This function creates a \code{data.frame} containing the drug response data from the database.
+#'
+#' @param con A \code{SQLiteConnection} object to the database
+#' @param drugs A vector of compound identifiers
+#' @param cell_lines A vector of cell line identifiers
+#' @return A \code{data.frame} containing the drug response data for the requested compounds and cell lines
+#' @export
 getDrugData <- function(con, drugs, cell_lines) {
 
 drugs.sql <- paste(drugs, collapse="','")
@@ -11,6 +20,15 @@ return(dbGetQuery(con, sql))
 
 }
 
+#' Extract hybrid capture sequencing data
+#'
+#' This function creates a \code{data.frame} containing the hybrid capture sequencing from the database for the requested cell lines and genes.  Gene/sample pairs where there exists at least one missense, nonsense or framshift mutation are categorised as 1, those that don't are categorised as 0.
+#'
+#' @param con A \code{SQLiteConnection} object to the database
+#' @param genes A vector of gene symbols
+#' @param cell_lines A vector of cell line identifiers
+#' @return A \code{data.frame} containing the hybrid capture sequencing data for the requested compounds and cell lines
+#' @export
 getHybcapData <- function(con, genes, cell_lines) {
   require(dplyr)
 
@@ -35,6 +53,15 @@ getHybcapData <- function(con, genes, cell_lines) {
 
 }
 
+#' Extract affymetrix expression data
+#'
+#' This function creates a \code{data.frame} containing the affymetrix  gene expression data from the database for the requested cell lines and genes.
+#'
+#' @param con A \code{SQLiteConnection} object to the database
+#' @param genes A vector of gene symbols
+#' @param cell_lines A vectore of cell line identifiers
+#' @return A \code{data.frame} containing the affymetrix gene expression data for the requested compounds and cell lines
+#' @export
 getAffyData <- function(con, genes, cell_lines) {
 
   genes.sql <- paste(genes, collapse="','")
@@ -46,6 +73,17 @@ getAffyData <- function(con, genes, cell_lines) {
 
 }
 
+#' Merge different data types into a single data frame
+#'
+#' This function creates a \code{data.frame} containing data for different data types in a form suitable for further statistical modelling in R.
+#'
+#' @param con A \code{SQLiteConnection} object to the database
+#' @param genes A vector of gene symbols
+#' @param cell_lines A vectore of cell line identifiers
+#' @param drugs A vector of compound identifiers
+#' @param data_types A vector with default \code{c('affy', 'hybcap', 'resp')} to specify which data types should be returned.
+#' @return A \code{data.frame} containing the affymetrix gene expression data for the requested compounds and cell lines
+#' @export
 make_df <- function(con, genes, cell_lines, drugs, data_types=c('affy', 'hybcap', 'resp')) {
   require(reshape2)
   require(dplyr)
