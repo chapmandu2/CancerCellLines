@@ -4,7 +4,7 @@ author: "Phil Chapman"
 date: "October 9, 2015"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Overview Vignette for CancerCellLines Package}
+  %\VignetteIndexEntry{"Overview Vignette for CancerCellLines Package"}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -99,10 +99,11 @@ ccle_affy %>% filter(symbol %in% symbols & CCLE_name %in% cell_lines)
 ```
 
 ##  Convenience functions to export data
-There are a number of convenience functions that assist in executing typical queries.  For example, the `getAffyData` function can be used to simplify the queries above still further:
+There are a number of convenience functions that assist in executing typical queries.  For example, the `getAffyData` and `getCopyNumberData` functions can be used to simplify the queries above still further:
 
 ```{r}
 getAffyData(test_db, symbols, cell_lines)
+getCopyNumberData(test_db, symbols, cell_lines)
 ```
 
 Whilst the `getHybcapData` function retrieves the CCLE hybrid capture sequencing data:
@@ -135,6 +136,7 @@ Define where the data is to be stored/found.  Files downloaded from the [CCLE pr
 dbpath <- '~/BigData/CellLineData/CancerCellLines.db'
 infopath <- '~/BigData/CellLineData/RawData/CCLE_sample_info_file_2012-10-18.txt'
 affypath <- '~/BigData/CellLineData/RawData/CCLE_Expression_Entrez_2012-09-29.gct'
+cnpath <- '~/BigData/CellLineData/RawData/CCLE_copynumber_byGene_2012-09-29.txt'
 hybcappath <- '~/BigData/CellLineData/RawData/CCLE_hybrid_capture1650_hg19_NoCommonSNPs_NoNeutralVariants_CDS_2012.05.07.xlsx'
 drugpath <- '~/BigData/CellLineData/RawData/CCLE_NP24.2009_Drug_data_2012.02.20.csv'
 
@@ -147,6 +149,7 @@ Set up the SQLite database and run the import functions
   importCCLE_hybcap(hybcappath , full_con)
   importCCLE_drugresponse(drugpath , full_con)
   importCCLE_affy(affypath , full_con)
+  importCCLE_cn(cnpath, full_con)
   
 ```
 
@@ -169,12 +172,22 @@ To really put it through its paces try retrieving data from 2000 genes in 200 ce
       distinct %>% collect %>% sample_n(200) %>% as.data.frame
     random_cell_lines <- random_cell_lines$CCLE_name
     
+    #get 10 random compounds
+    random_drugs <- dplyr_con %>% tbl('ccle_drug_data') %>% dplyr::select(Compound) %>%
+      distinct %>% collect %>% sample_n(10) %>% as.data.frame
+    random_drugs <- random_drugs$Compound
+    
     #retrieve the data
     test_affy <- getAffyData(full_con, random_genes, random_cell_lines)
+    test_cn <- getCopyNumberData(full_con, random_genes, random_cell_lines)
+    test_hybcap <- getHybcapData(full_con, random_genes, random_cell_lines)
+    
+    #make a big data frame
+    big_df <- make_df(full_con, random_genes, random_cell_lines, random_drugs)
   
 ```
 
-This should take no more than 5 seconds depending on your hardware.
+This should take no more than 1-2 seconds for either constituent retrieval, and ~5 seconds to make the data frame depending on your hardware.
 
 ## Future directions
 

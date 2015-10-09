@@ -73,6 +73,26 @@ getAffyData <- function(con, genes, cell_lines) {
 
 }
 
+#' Extract copy number data
+#'
+#' This function creates a \code{data.frame} containing the by gene copy number data from the database for the requested cell lines and genes.
+#'
+#' @param con A \code{SQLiteConnection} object to the database
+#' @param genes A vector of gene symbols
+#' @param cell_lines A vectore of cell line identifiers
+#' @return A \code{data.frame} containing the by gene copy number data for the requested compounds and cell lines
+#' @export
+getCopyNumberData <- function(con, genes, cell_lines) {
+
+  genes.sql <- paste(genes, collapse="','")
+  cell_lines.sql <- paste(cell_lines, collapse="','")
+  sql <- sprintf("select CCLE_name, Symbol as ID, 'cn' as Type, log2cn as original, log2cn as value
+               from ccle_cn
+               where CCLE_name IN ('%s') and Symbol IN ('%s')", cell_lines.sql, genes.sql)
+  return(dbGetQuery(con, sql))
+
+}
+
 #' Merge different data types into a single data frame
 #'
 #' This function creates a \code{data.frame} containing data for different data types in a form suitable for further statistical modelling in R.
@@ -84,13 +104,14 @@ getAffyData <- function(con, genes, cell_lines) {
 #' @param data_types A vector with default \code{c('affy', 'hybcap', 'resp')} to specify which data types should be returned.
 #' @return A \code{data.frame} containing the affymetrix gene expression data for the requested compounds and cell lines
 #' @export
-make_df <- function(con, genes, cell_lines, drugs, data_types=c('affy', 'hybcap', 'resp')) {
+make_df <- function(con, genes, cell_lines, drugs, data_types=c('affy', 'cn', 'hybcap', 'resp')) {
   require(reshape2)
   require(dplyr)
   affy.df <- getAffyData(con, genes, cell_lines)
+  cn.df <- getCopyNumberData(con, genes, cell_lines)
   hybcap.df <- getHybcapData(con, genes, cell_lines)
   drug.df <- getDrugData(con, drugs, cell_lines)
-  all.df <- rbind(affy.df, hybcap.df, drug.df) %>% filter(Type %in% data_types)
+  all.df <- rbind(affy.df, cn.df, hybcap.df, drug.df) %>% filter(Type %in% data_types)
   out <- dcast(all.df , CCLE_name ~ ID + Type, value.var='value' )
   return(out)
 

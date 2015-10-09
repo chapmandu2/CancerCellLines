@@ -4,7 +4,7 @@
 \alias{make_df}
 \title{Merge different data types into a single data frame}
 \usage{
-make_df(con, genes, cell_lines, drugs, data_types = c("affy", "hybcap",
+make_df(con, genes, cell_lines, drugs, data_types = c("affy", "cn", "hybcap",
   "resp"))
 }
 \arguments{

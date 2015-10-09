@@ -34,6 +34,23 @@ maketoyCCLE_affy <- function (fn, pattern='_BREAST', outdir=getwd()) {
 
 }
 
+maketoyCCLE_cn <- function (fn, pattern='_BREAST', outdir=getwd()) {
+
+  fn <- '~/BigData/CellLineData/RawData/CCLE_copynumber_byGene_2012-09-29.txt'
+  outdir <- '~/Documents/2015 Projects/20150622 CancerCellLine Package/ToyData/'
+
+  data <- read.table(fn,header=T, sep='\t', stringsAsFactors = FALSE)
+  reqcols <- grepl(pattern, colnames(data))
+  reqcols[1:4] <- TRUE
+  data <- data [  , reqcols ]
+
+  outfn <- gsub('.txt', '_toy.txt', basename(fn))
+  outpath <- paste0(outdir,outfn)
+
+  write.table(data, outpath, sep='\t', append=FALSE, row.names=FALSE, quote = FALSE)
+
+}
+
 maketoyCCLE_hybcap <- function (fn, pattern='_BREAST', outdir=getwd()) {
 
   require(readxl)
