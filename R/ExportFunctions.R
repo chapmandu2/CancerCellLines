@@ -38,16 +38,56 @@ getHybcapData <- function(con, genes, cell_lines) {
                  from ccle_hybcap
                  where CCLE_name IN ('%s') and Hugo_Symbol IN ('%s')", cell_lines.sql, genes.sql)
   data <- dbGetQuery(con, sql)
+
   data <- data %>% filter(grepl('Missense|Nonsense|Frame_Shift', Variant_Classification)) %>%
       select(-Variant_Classification) %>% group_by(CCLE_name, ID) %>%
     summarise(original=paste(Protein_Change, collapse='|'), value=1) %>% ungroup()
+
   blank_data <- merge(data.frame(CCLE_name = cell_lines, stringsAsFactors = FALSE),
                       data.frame(ID = genes, stringsAsFactors = FALSE))
+
   data <- blank_data %>% left_join(data, by=c('CCLE_name', 'ID')) %>%
     mutate(original=ifelse(is.na(original), 'wt', original),
            value = ifelse(is.na(value), 0, value),
            Type = 'hybcap') %>%
     select (CCLE_name, ID, Type, original, value)
+
+  return(data)
+
+}
+
+#' Extract Cosmic CLP Exome sequencing data
+#'
+#' This function creates a \code{data.frame} containing the Cosmic CLP exome sequencing datafrom the database for the requested cell lines and genes.  Gene/sample pairs where there exists at least one missense, nonsense or framshift mutation are categorised as 1, those that don't are categorised as 0.
+#'
+#' @param con A \code{SQLiteConnection} object to the database
+#' @param genes A vector of gene symbols
+#' @param cell_lines A vector of cell line identifiers
+#' @return A \code{data.frame} containing the hybrid capture sequencing data for the requested compounds and cell lines
+#' @export
+getCosmicCLPData <- function(con, genes, cell_lines) {
+  require(dplyr)
+
+  genes.sql <- paste(genes, collapse="','")
+  cell_lines.sql <- paste(cell_lines, collapse="','")
+  sql <- sprintf("select sample_name as CCLE_name, gene_name as ID,  mutation_aa, mutation_description
+                 from cosmicclp_exome
+                 where sample_name IN ('%s') and gene_name IN ('%s')", cell_lines.sql, genes.sql)
+  data <- dbGetQuery(con, sql)
+
+  data <- data %>% filter(grepl('Missense|Nonsense|Frameshift', mutation_description)) %>%
+    select(-mutation_description) %>% group_by(CCLE_name, ID) %>%
+    summarise(original=paste(mutation_aa, collapse='|'), value=1) %>% ungroup()
+
+  blank_data <- merge(data.frame(CCLE_name = cell_lines, stringsAsFactors = FALSE),
+                      data.frame(ID = genes, stringsAsFactors = FALSE))
+
+  data <- blank_data %>% left_join(data, by=c('CCLE_name', 'ID')) %>%
+    mutate(original=ifelse(is.na(original), 'wt', original),
+           value = ifelse(is.na(value), 0, value),
+           Type = 'cosmicclp') %>%
+    select (CCLE_name, ID, Type, original, value)
+
   return(data)
 
 

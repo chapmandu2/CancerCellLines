@@ -68,6 +68,21 @@ maketoyCCLE_hybcap <- function (fn, pattern='_BREAST', outdir=getwd()) {
 
 }
 
+maketoyCosmicCLP_exome <- function (fn, pattern='_BREAST', outdir=getwd()) {
+
+  require(readr)
+  fn <- '~/BigData/CellLineData/RawData/CosmicCLP_CompleteExport_v74.tsv'
+  outdir <- '/Users/pchapman/Documents/2015 Projects/20150622 CancerCellLine Package/ToyData/'
+
+  data <- read_tsv(fn)
+
+  out <- data [ grepl(pattern, paste0('_', toupper(data$`Primary site`))) , ]
+
+  outfn <- gsub('.tsv', '_toy.tsv', basename(fn))
+  write.table( out, paste0(outdir,outfn), row.names = FALSE, sep='\t' )
+
+}
+
 maketoyCCLE_drugresponse <- function (fn, pattern='_BREAST', outdir=getwd()) {
 
   fn <- '~/BigData/CellLineData/RawData/CCLE_NP24.2009_Drug_data_2012.02.20.csv'

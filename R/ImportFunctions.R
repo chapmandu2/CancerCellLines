@@ -118,6 +118,42 @@ importCCLE_hybcap <- function ( fn , con ) {
 
 }
 
+#' Import Cosmic Cell Lines Project exome sequencing data
+#'
+#' This function imports the information in CosmicCLP_CompleteExport_v74.tsv into the cosmicclp_exome table in the database.
+#' Also indexes the table for fast retrieval.
+#'
+#' @param fn The path of the data file
+#' @param con A \code{SQLiteConnection} object to the database
+#' @return TRUE or FALSE depending on whether the data has been written successfully
+#' @export
+importCosmicCLP_exome <- function ( fn , con ) {
+
+  require(readr)
+  #fn <- '~/BigData/CellLineData/RawData/CosmicCLP_CompleteExport_v74.tsv'
+
+  message('Parse the Cosmic CLP exome data file')
+  data <- read_tsv(fn,
+                   col_names=c('gene_name', 'accession_number', 'hgnc_id', 'sample_name', 'id_sample',
+                               'id_tumour', 'mutation_id', 'mutation_cds', 'mutation_aa', 'mutation_description',
+                               'mutation_zygosity', 'loh', 'grch', 'mutation_genome_position', 'strand',
+                               'snp', 'fathmm_prediction', 'fathmm_score', 'mutation_somatic_status'),
+                   col_types='cc_iccc_________cccccccccccdc________',
+                  skip=1)
+
+  message('Write the data to the database')
+  dbWriteTable(con, "cosmicclp_exome", as.data.frame(data), overwrite=TRUE)
+
+  ##index
+  message('Indexing the table')
+  dbSendQuery ( con , sprintf(' CREATE INDEX `cosmicclp_exome_gene_name` ON `%s` (`gene_name` ASC); ', 'cosmicclp_exome' )   )
+  dbSendQuery ( con , sprintf(' CREATE INDEX `cosmicclp_exome_sample_name` ON `%s` (`sample_name` ASC); ', 'cosmicclp_exome' )   )
+  dbSendQuery ( con , sprintf(' CREATE INDEX `cosmicclp_exome_gene_name_AND_sample_name` ON `%s` (`gene_name`,`sample_name` ASC); ', 'cosmicclp_exome' )   )
+
+  message('Finished importing Cosmic CLP exome sequencing data')
+
+}
+
 #' Import CCLE drug response data
 #'
 #' This function imports the information in CCLE_NP24.2009_Drug_data_2012.02.20.csv into the ccle_drugresponse table in the database.
@@ -149,6 +185,7 @@ makeToyDB <- function() {
   importCCLE_affy(system.file("extdata", "CCLE_Expression_Entrez_2012-09-29_toy.gct", package = "CancerCellLines") , toy_con)
   importCCLE_cn(system.file("extdata", "CCLE_copynumber_byGene_2012-09-29_toy.txt", package = "CancerCellLines") , toy_con)
   importCCLE_hybcap(system.file("extdata", "CCLE_hybrid_capture1650_hg19_NoCommonSNPs_NoNeutralVariants_CDS_2012.05.07_toy.xlsx", package = "CancerCellLines") , toy_con)
+  importCosmicCLP_exome(system.file("extdata", "CosmicCLP_CompleteExport_v74_toy.tsv", package = "CancerCellLines") , toy_con)
   importCCLE_drugresponse(system.file("extdata", "CCLE_NP24.2009_Drug_data_2012.02.20_toy.txt", package = "CancerCellLines") , toy_con)
 
   print('A database of toy data has successfully been created and a connector returned')

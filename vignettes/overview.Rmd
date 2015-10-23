@@ -107,9 +107,10 @@ getAffyData(test_db, symbols, cell_lines)
 getCopyNumberData(test_db, symbols, cell_lines)
 ```
 
-Whilst the `getHybcapData` function retrieves the CCLE hybrid capture sequencing data:
+Whilst the `getHybcapData` and `getCosmicCLPData` functions retrieve the CCLE hybrid capture and Cosmic Cell Line Project sequencing data respectively:
 ```{r}
 getHybcapData(test_db, symbols, cell_lines)
+getCosmicCLPData(test_db, symbols, cell_lines)
 ```
 
 And the `getDrugData` function retrieves drug response data:
@@ -139,6 +140,7 @@ infopath <- '~/BigData/CellLineData/RawData/CCLE_sample_info_file_2012-10-18.txt
 affypath <- '~/BigData/CellLineData/RawData/CCLE_Expression_Entrez_2012-09-29.gct'
 cnpath <- '~/BigData/CellLineData/RawData/CCLE_copynumber_byGene_2012-09-29.txt'
 hybcappath <- '~/BigData/CellLineData/RawData/CCLE_hybrid_capture1650_hg19_NoCommonSNPs_NoNeutralVariants_CDS_2012.05.07.xlsx'
+cosmicclppath <- '~/BigData/CellLineData/RawData/CosmicCLP_CompleteExport_v74.tsv'
 drugpath <- '~/BigData/CellLineData/RawData/CCLE_NP24.2009_Drug_data_2012.02.20.csv'
 
 ```
@@ -148,6 +150,7 @@ Set up the SQLite database and run the import functions
   full_con <- setupSQLite(dbpath)
   importCCLE_info(infopath , full_con)
   importCCLE_hybcap(hybcappath , full_con)
+  importCosmicCLP_exome(cosmicclppath, full_con)
   importCCLE_drugresponse(drugpath , full_con)
   importCCLE_affy(affypath , full_con)
   importCCLE_cn(cnpath, full_con)
@@ -164,8 +167,9 @@ To really put it through its paces try retrieving data from 2000 genes in 200 ce
     dplyr_con <- src_sqlite(full_con@dbname)
     
     #get 2000 random genes
-    random_genes <- dplyr_con %>% tbl('ccle_affy') %>% dplyr::select(Symbol) %>%
-      distinct %>% collect %>% sample_n(2000) %>% as.data.frame
+    random_genes <- dplyr_con %>% tbl('ccle_affy') %>% group_by(Symbol) %>% summarise(N=n()) %>% 
+      ungroup() %>% collect %>% 
+      dplyr::filter(N < mean(N)) %>% sample_n(2000) %>% as.data.frame
     random_genes <- random_genes$Symbol
   
     #get 200 random cell lines
