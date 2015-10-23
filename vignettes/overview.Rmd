@@ -118,12 +118,26 @@ Note that the CancerCellLines package includes functionality to convert cell lin
 con %>% tbl('cell_line_ids') %>% filter(unified_id %in% cell_lines)
 ```
 
-Finally, the `getDrugData` function retrieves drug response data:
+Finally, the `getDrugData_CCLE` function retrieves the CCLE drug response data:
 ```{r}
 drugs <- c('Lapatinib', 'AZD6244', 'Nilotinib' )
-getDrugData(test_db, drugs, cell_lines)
+getDrugData_CCLE(test_db, drugs, cell_lines)
 ```
 
+Whilst the `getDrugData_custom` function transforms an arbitrary data frame with the field names BLAH into a standardised data frame:
+```{r}
+dietlein_data_fn <- system.file("extdata", "Dietlein2014_supp_table_1.txt", package = "CancerCellLines")
+dietlein_data <- read.table(dietlein_data_fn, header=T, sep='\t', stringsAsFactors=F)
+head(dietlein_data)
+dietlein_data <- dietlein_data %>% 
+  filter(nchar(CCLE_name) > 1) %>% 
+  transmute(unified_id=CCLE_name, compound_id='KU60648', endpoint='pGI50', original=GI50, value=-log10(GI50)) 
+head(dietlein_data)
+getDrugData_custom(dietlein_data, drugs = 'KU60648', cell_lines = c('DMS114_LUNG', 'A549_LUNG'))
+
+```
+
+## Combining different data types
 These functions all have a standard output format which means that data from different assay types can be merged and plotted or analysed together.
 
 Finally, there is the `make_df` function which does this merging in a standard way and returns a data frame of a type that can be used for modelling drug response based on genetic features.
@@ -175,7 +189,7 @@ To really put it through its paces try retrieving data from 2000 genes in 200 ce
     #get 2000 random genes
     random_genes <- dplyr_con %>% tbl('ccle_affy') %>% group_by(Symbol) %>% summarise(N=n()) %>% 
       ungroup() %>% collect %>% 
-      dplyr::filter(N < mean(N)) %>% sample_n(2000) %>% as.data.frame
+      dplyr::filter(N < mean(N)) %>% sample_n(200) %>% as.data.frame
     random_genes <- random_genes$Symbol
   
     #get 200 random cell lines
@@ -196,10 +210,17 @@ To really put it through its paces try retrieving data from 2000 genes in 200 ce
     
     #make a big data frame
     big_df <- make_df(full_con, random_genes, random_cell_lines, random_drugs)
+    
+    #without resp data
+    big_df <- make_df(full_con, random_genes, random_cell_lines, drugs=random_drugs, data_types=c('affy', 'cn', 'hybcap', 'cosmicclp'))
+    
+    #with custom resp data
+    big_df <- make_df(full_con, random_genes, cell_lines = c('DMS114_LUNG', 'A549_LUNG'), drugs = 'KU60648', drug_df = dietlein_data)
+
   
 ```
 
-This should take no more than 1-2 seconds for each constituent retrieval, and ~5 seconds to make the data frame depending on your hardware.
+This should take no more than 4-5 seconds for each constituent retrieval, and ~10 seconds to make the data frame depending on your hardware (SSD's will be quicker than HDD's).
 
 ## Future directions
 

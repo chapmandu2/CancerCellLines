@@ -1,22 +1,80 @@
 #functions to export data from sqlite db
 
-#' Extract drug response data
+#' Extract CCLE drug response data
 #'
-#' This function creates a \code{data.frame} containing the drug response data from the database.
+#' This function creates a \code{data.frame} containing the CCLE drug response data from the database.
 #'
 #' @param con A \code{SQLiteConnection} object to the database
 #' @param drugs A vector of compound identifiers
 #' @param cell_lines A vector of cell line identifiers
 #' @return A \code{data.frame} containing the drug response data for the requested compounds and cell lines
 #' @export
-getDrugData <- function(con, drugs, cell_lines) {
+getDrugData_CCLE <- function(con, drugs, cell_lines) {
 
 drugs.sql <- paste(drugs, collapse="','")
 cell_lines.sql <- paste(cell_lines, collapse="','")
 sql <- sprintf("select CCLE_name, Compound as ID, 'resp' as Type, EC50_uM as original, EC50_uM as value
                from ccle_drug_data
                where CCLE_name IN ('%s') and Compound IN ('%s')", cell_lines.sql, drugs.sql)
-return(dbGetQuery(con, sql))
+out <- dbGetQuery(con, sql)
+out <- out %>% mutate_each(funs(as.character), -value) %>% mutate_each(funs(as.numeric), value)
+return(out)
+
+}
+
+#' Extract custom drug response data
+#'
+#' This function creates a \code{data.frame} containing the drug response data from a user provided data frame
+#'
+#' @param df A \code{data.frame} object containing the data which should include columns names compound_id, unified_id, endpoint, original and value
+#' @param drugs A vector of compound identifiers
+#' @param cell_lines A vector of cell line identifiers
+#' @return A \code{data.frame} containing the drug response data for the requested compounds and cell lines
+#' @export
+getDrugData_custom <- function(df, drugs, cell_lines) {
+
+  required_colnames <- c('compound_id', 'unified_id', 'endpoint', 'original', 'value')
+  missing_columns <- setdiff(required_colnames,colnames(df))
+
+  if(length(missing_columns) > 0) {
+    stop(sprintf('Following required column names not present in supplied data frame: %s', sprintf(paste(missing_columns, collapse=', '))))
+    }
+
+  outdata <- df %>% dplyr::filter(compound_id %in% drugs & unified_id %in% cell_lines) %>%
+                    dplyr::transmute(CCLE_name=unified_id,
+                                     ID=paste(compound_id, endpoint, sep='_'),
+                                     Type='resp',
+                                     original=original,
+                                     value) %>% as.data.frame
+
+  outdata <- outdata %>% mutate_each(funs(as.character), -value) %>% mutate_each(funs(as.numeric), value)
+
+  if(nrow(outdata)==0) {
+    stop('No data found matching supplied drugs/cell lines')
+  } else {
+  return(outdata)
+  }
+}
+
+#' Generic function to get response data from multiple sources
+#'
+#' This function creates a \code{data.frame} containing the response data from a variety of sourses.
+#'
+#' @param src A \code{SQLiteConnection} object to the database (ccle) or \code{data.frame} object (custom)
+#' @param drugs A vector of compound identifiers
+#' @param cell_lines A vector of cell line identifiers
+#' @param resp_type The type of response data: \code{ccle, custom}
+#' @return A \code{data.frame} containing the response data for the requested compounds and cell lines
+#' @export
+getResponseData <- function(src, drugs, cell_lines, resp_type='ccle') {
+
+  if (class(src) == 'SQLiteConnection' & resp_type == 'ccle') {
+    getDrugData_CCLE(src, drugs, cell_lines)
+  } else if (class(src) == 'data.frame' & resp_type == 'custom') {
+    getDrugData_custom(src, drugs, cell_lines)
+  } else {
+    stop('Check ?getResponseData to ensure you are passing the correct options into src')
+  }
 
 }
 
@@ -51,6 +109,8 @@ getHybcapData <- function(con, genes, cell_lines) {
            value = ifelse(is.na(value), 0, value),
            Type = 'hybcap') %>%
     select (CCLE_name, ID, Type, original, value)
+
+  data <- data %>% mutate_each(funs(as.character), -value) %>% mutate_each(funs(as.numeric), value)
 
   return(data)
 
@@ -90,6 +150,8 @@ getCosmicCLPData <- function(con, genes, cell_lines) {
            Type = 'cosmicclp') %>%
     select (CCLE_name, ID, Type, original, value)
 
+  data <- data %>% mutate_each(funs(as.character), -value) %>% mutate_each(funs(as.numeric), value)
+
   return(data)
 
 
@@ -111,7 +173,11 @@ getAffyData <- function(con, genes, cell_lines) {
   sql <- sprintf("select CCLE_name, Symbol as ID, 'affy' as Type, Signal as original, Signal as value
                from ccle_affy
                where CCLE_name IN ('%s') and Symbol IN ('%s')", cell_lines.sql, genes.sql)
-  return(dbGetQuery(con, sql))
+
+  data <- dbGetQuery(con, sql)
+  data <- data %>% mutate_each(funs(as.character), -value) %>% mutate_each(funs(as.numeric), value)
+
+  return(data)
 
 }
 
@@ -131,7 +197,11 @@ getCopyNumberData <- function(con, genes, cell_lines) {
   sql <- sprintf("select CCLE_name, Symbol as ID, 'cn' as Type, log2cn as original, log2cn as value
                from ccle_cn
                where CCLE_name IN ('%s') and Symbol IN ('%s')", cell_lines.sql, genes.sql)
-  return(dbGetQuery(con, sql))
+
+  data <- dbGetQuery(con, sql)
+  data <- data %>% mutate_each(funs(as.character), -value) %>% mutate_each(funs(as.numeric), value)
+
+  return(data)
 
 }
 
@@ -146,16 +216,67 @@ getCopyNumberData <- function(con, genes, cell_lines) {
 #' @param data_types A vector with default \code{c('affy', 'hybcap', 'resp')} to specify which data types should be returned.
 #' @return A \code{data.frame} containing the affymetrix gene expression data for the requested compounds and cell lines
 #' @export
-make_df <- function(con, genes, cell_lines, drugs, data_types=c('affy', 'cn', 'hybcap', 'resp', 'cosmicclp')) {
-  require(reshape2)
+make_df <- function(con, genes, cell_lines, drugs, data_types=c('affy', 'cn', 'hybcap', 'resp', 'cosmicclp'), drug_df=NULL) {
+  require(tidyr)
   require(dplyr)
-  affy.df <- getAffyData(con, genes, cell_lines)
-  cn.df <- getCopyNumberData(con, genes, cell_lines)
-  hybcap.df <- getHybcapData(con, genes, cell_lines)
-  drug.df <- getDrugData(con, drugs, cell_lines)
-  cosmicclp.df <- getCosmicCLPData(con, genes, cell_lines)
-  all.df <- rbind(affy.df, cn.df, hybcap.df, drug.df, cosmicclp.df) %>% filter(Type %in% data_types)
-  out <- dcast(all.df , CCLE_name ~ ID + Type, value.var='value' )
-  return(out)
+
+  #make a data container list
+  all_data.list <- list()
+
+  #get the data
+  if ('affy' %in% data_types) {
+    all_data.list[['affy_data']] <- getAffyData(con, genes, cell_lines)
+  }
+
+  if ('hybcap' %in% data_types) {
+    all_data.list[['hybcap_data']] <- getHybcapData(con, genes, cell_lines)
+  }
+
+  if ('cosmicclp' %in% data_types) {
+    all_data.list[['cosmicclp_data']] <- getCosmicCLPData(con, genes, cell_lines)
+  }
+
+  if ('cn' %in% data_types) {
+    all_data.list[['cn_data']] <- getCopyNumberData(con, genes, cell_lines)
+  }
+
+  if ('resp' %in% data_types) {
+    if(is.null(drug_df)) {
+      all_data.list[['resp_data']] <- getResponseData(con, drugs, cell_lines, resp_type='ccle')
+    } else {
+      all_data.list[['resp_data']] <- getResponseData(drug_df, drugs, cell_lines, resp_type='custom')
+    }
+    #check that all compounds in params have been returned, give warning if not
+    missing_resps <- setdiff(drugs,unique(all_data.list[['resp_data']]$ID))
+    if (length(missing_resps) != 0) {
+      warning(sprintf('No data returned for: %s', paste(missing_resps, collapse=', ')))
+    }
+
+    #combine
+    all_data <- bind_rows(all_data.list)
+
+    #get rid of cell lines with no response data
+    present_cls <- unique(all_data.list[['resp_data']]$CCLE_name)
+    missing_cls <- setdiff(cell_lines, present_cls)
+    all_data <- all_data %>% filter(CCLE_name %in% present_cls)
+    if (length(missing_cls) != 0) {
+      warning(sprintf('No response data for following cell lines: %s', paste(missing_cls, collapse=', ')))
+    }
+  } else {
+    #combine
+    all_data <- bind_rows(all_data.list)
+  }
+
+  #create matrix
+  output.df <- all_data %>% transmute(CCLE_name, fn=paste(ID,Type,sep='_'), value) %>% spread(fn, value)
+
+  #reorder columns
+  output.df <- output.df %>% dplyr::select(CCLE_name, ends_with('_resp'), everything())
+
+  #make mutation fields into factors
+  output.df <- output.df %>% mutate_each(funs(as.factor), ends_with('_hybcap|_cosmicclp'))
+
+  return(output.df)
+
 
 }
