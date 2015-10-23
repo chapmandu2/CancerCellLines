@@ -97,3 +97,17 @@ maketoyCCLE_drugresponse <- function (fn, pattern='_BREAST', outdir=getwd()) {
   write( out, paste0(outdir,outfn))
 
 }
+
+maketoyCellLineIDs <- function (fn, pattern='_BREAST', outdir=getwd()) {
+
+  fn <- '~/BigData/CellLineData/RawData/CellLineIDNormalisationOct15.txt'
+  outdir <- '~/Documents/2015 Projects/20150622 CancerCellLine Package/ToyData/'
+
+  data <- read.table(fn, header=T, sep='\t')
+
+  out <- data [ grepl(pattern, data$unified_id) , ]
+
+  outfn <- gsub('.txt', '_toy.txt', basename(fn))
+  write.table( out, paste0(outdir,outfn), row.names = FALSE, sep='\t' )
+
+}

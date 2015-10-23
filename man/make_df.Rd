@@ -5,7 +5,7 @@
 \title{Merge different data types into a single data frame}
 \usage{
 make_df(con, genes, cell_lines, drugs, data_types = c("affy", "cn", "hybcap",
-  "resp"))
+  "resp", "cosmicclp"))
 }
 \arguments{
 \item{con}{A \code{SQLiteConnection} object to the database}

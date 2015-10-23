@@ -170,6 +170,21 @@ importCCLE_drugresponse <- function (fn , con) {
   dbWriteTable(con, "ccle_drug_data", data, overwrite=TRUE)
 }
 
+#' Import cell line interconversion data
+#'
+#' This function imports the information in the CellLineIDNormalisationOct15.txt file into the cell_line_ids table in the database.
+#'
+#' @param fn The path of the data file
+#' @param con A \code{SQLiteConnection} object to the database
+#' @return TRUE or FALSE depending on whether the data has been written successfully
+#' @export
+importCellLineIDs <- function (fn , con) {
+
+  data <- read.table(fn, header=T, sep='\t')
+
+  dbWriteTable(con, "cell_line_ids", data, overwrite=TRUE)
+}
+
 #' Set up a toy database
 #'
 #' This function imports the example toy dataset included with the package into a temporary database.
@@ -187,6 +202,7 @@ makeToyDB <- function() {
   importCCLE_hybcap(system.file("extdata", "CCLE_hybrid_capture1650_hg19_NoCommonSNPs_NoNeutralVariants_CDS_2012.05.07_toy.xlsx", package = "CancerCellLines") , toy_con)
   importCosmicCLP_exome(system.file("extdata", "CosmicCLP_CompleteExport_v74_toy.tsv", package = "CancerCellLines") , toy_con)
   importCCLE_drugresponse(system.file("extdata", "CCLE_NP24.2009_Drug_data_2012.02.20_toy.txt", package = "CancerCellLines") , toy_con)
+  importCellLineIDs(system.file("extdata", "CellLineIDNormalisationOct15_toy.txt", package = "CancerCellLines") , toy_con)
 
   print('A database of toy data has successfully been created and a connector returned')
   return(toy_con)

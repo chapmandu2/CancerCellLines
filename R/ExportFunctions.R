@@ -70,9 +70,11 @@ getCosmicCLPData <- function(con, genes, cell_lines) {
 
   genes.sql <- paste(genes, collapse="','")
   cell_lines.sql <- paste(cell_lines, collapse="','")
-  sql <- sprintf("select sample_name as CCLE_name, gene_name as ID,  mutation_aa, mutation_description
-                 from cosmicclp_exome
-                 where sample_name IN ('%s') and gene_name IN ('%s')", cell_lines.sql, genes.sql)
+  sql <- sprintf("select t2.unified_id as CCLE_name, t1.gene_name as ID,  t1.mutation_aa, t1.mutation_description
+                 from cosmicclp_exome t1
+                  inner join cell_line_ids t2 on t1.sample_name = t2.native_id
+                 where t2.id_type = 'cosmic_clp' and
+                 t2.unified_id IN ('%s') and gene_name IN ('%s')", cell_lines.sql, genes.sql)
   data <- dbGetQuery(con, sql)
 
   data <- data %>% filter(grepl('Missense|Nonsense|Frameshift', mutation_description)) %>%
@@ -144,14 +146,15 @@ getCopyNumberData <- function(con, genes, cell_lines) {
 #' @param data_types A vector with default \code{c('affy', 'hybcap', 'resp')} to specify which data types should be returned.
 #' @return A \code{data.frame} containing the affymetrix gene expression data for the requested compounds and cell lines
 #' @export
-make_df <- function(con, genes, cell_lines, drugs, data_types=c('affy', 'cn', 'hybcap', 'resp')) {
+make_df <- function(con, genes, cell_lines, drugs, data_types=c('affy', 'cn', 'hybcap', 'resp', 'cosmicclp')) {
   require(reshape2)
   require(dplyr)
   affy.df <- getAffyData(con, genes, cell_lines)
   cn.df <- getCopyNumberData(con, genes, cell_lines)
   hybcap.df <- getHybcapData(con, genes, cell_lines)
   drug.df <- getDrugData(con, drugs, cell_lines)
-  all.df <- rbind(affy.df, cn.df, hybcap.df, drug.df) %>% filter(Type %in% data_types)
+  cosmicclp.df <- getCosmicCLPData(con, genes, cell_lines)
+  all.df <- rbind(affy.df, cn.df, hybcap.df, drug.df, cosmicclp.df) %>% filter(Type %in% data_types)
   out <- dcast(all.df , CCLE_name ~ ID + Type, value.var='value' )
   return(out)
 
