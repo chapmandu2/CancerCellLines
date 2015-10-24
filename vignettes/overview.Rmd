@@ -65,11 +65,11 @@ However, writing the SQL yourself can get inconvenient if you want to retrieve s
 ```{r}
 dbGetQuery(test_db, "select * from ccle_affy 
                       where symbol IN ('PTEN', 'TP53', 'BRAF' ) and 
-                            CCLE_name IN ('EFM192A_BREAST', 'MDAMB468_BREAST') 
+                            CCLE_name IN ('BT474_BREAST', 'MDAMB468_BREAST') 
                       limit 10")
 
 symbols <- c('PTEN', 'TP53', 'BRAF')
-cell_lines <- c('EFM192A_BREAST', 'MDAMB468_BREAST') 
+cell_lines <- c('BT474_BREAST', 'MDAMB468_BREAST') 
 symbols.sql <- paste(symbols, collapse="','")
 cell_lines.sql <- paste(cell_lines, collapse="','")
 
@@ -133,17 +133,41 @@ dietlein_data <- dietlein_data %>%
   filter(nchar(CCLE_name) > 1) %>% 
   transmute(unified_id=CCLE_name, compound_id='KU60648', endpoint='pGI50', original=GI50, value=-log10(GI50)) 
 head(dietlein_data)
-getDrugData_custom(dietlein_data, drugs = 'KU60648', cell_lines = c('DMS114_LUNG', 'A549_LUNG'))
+getDrugData_custom(dietlein_data, drugs = 'KU60648_pGI50', cell_lines = c('DMS114_LUNG', 'A549_LUNG'))
 
 ```
 
 ## Combining different data types
 These functions all have a standard output format which means that data from different assay types can be merged and plotted or analysed together.
 
-Finally, there is the `make_df` function which does this merging in a standard way and returns a data frame of a type that can be used for modelling drug response based on genetic features.
+The `make_tall_df` function does this merging in a standard way and returns the the data in a 'tidy' format that is useful for plotting in ggplot2 or further manipulation with tidyr.  
+
+```{r}
+make_tall_df(test_db, symbols, cell_lines, drugs)
+```
+
+The `make_wide_df` function can take the output from `make_tall_df` and create a wide or matrix-like data frame which is a conveninent input for modelling packages such as caret.
+
+```{r}
+my_df <- make_tall_df(test_db, symbols, cell_lines, drugs)
+make_wide_df(my_df)
+
+```
+
+Finally, there is the `make_df` function which generates a wide data frame directly.
 
 ```{r}
 make_df(test_db, symbols, cell_lines, drugs)
+```
+
+The `data_types` parameter can be used to control which data types are returned, and the `drug_df` parameter is used to provide custom drug information as per the `getDrugData_custom` function description above
+
+```{r}
+make_df(test_db, symbols, cell_lines, drugs, data_types=c('hybcap', 'affy', 'resp'))
+make_df(test_db, symbols, 
+        cell_lines = c('DMS114_LUNG', 'A549_LUNG'), 
+        drugs='KU60648_pGI50', data_types=c('hybcap', 'resp'), drug_df=dietlein_data)
+
 ```
 
 ## Working with the full CCLE dataset
@@ -189,7 +213,7 @@ To really put it through its paces try retrieving data from 2000 genes in 200 ce
     #get 2000 random genes
     random_genes <- dplyr_con %>% tbl('ccle_affy') %>% group_by(Symbol) %>% summarise(N=n()) %>% 
       ungroup() %>% collect %>% 
-      dplyr::filter(N < mean(N)) %>% sample_n(200) %>% as.data.frame
+      dplyr::filter(N < mean(N)) %>% sample_n(2000) %>% as.data.frame
     random_genes <- random_genes$Symbol
   
     #get 200 random cell lines
@@ -212,10 +236,10 @@ To really put it through its paces try retrieving data from 2000 genes in 200 ce
     big_df <- make_df(full_con, random_genes, random_cell_lines, random_drugs)
     
     #without resp data
-    big_df <- make_df(full_con, random_genes, random_cell_lines, drugs=random_drugs, data_types=c('affy', 'cn', 'hybcap', 'cosmicclp'))
+    big_df <- make_df(full_con, random_genes, random_cell_lines, drugs=NULL, data_types=c('affy', 'cn', 'hybcap', 'cosmicclp'))
     
     #with custom resp data
-    big_df <- make_df(full_con, random_genes, cell_lines = c('DMS114_LUNG', 'A549_LUNG'), drugs = 'KU60648', drug_df = dietlein_data)
+    big_df <- make_df(full_con, random_genes, cell_lines = c('DMS114_LUNG', 'A549_LUNG'), drugs = 'KU60648_pGI50', drug_df = dietlein_data)
 
   
 ```
@@ -225,4 +249,9 @@ This should take no more than 4-5 seconds for each constituent retrieval, and ~1
 ## Future directions
 
 Future plans are to integrate the thinking of using SQLite for fast on disk subsetting and retrieval with the biocMultiAssay package.  The will allow generic extension of the concept to other datasets without having to define import and retrieval functions and database schemas one dataset at a time. 
+
+## Session Info
+```{r}
+   sessionInfo() 
+```
 

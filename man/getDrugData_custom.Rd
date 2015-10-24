@@ -9,7 +9,7 @@ getDrugData_custom(df, drugs, cell_lines)
 \arguments{
 \item{df}{A \code{data.frame} object containing the data which should include columns names compound_id, unified_id, endpoint, original and value}
 
-\item{drugs}{A vector of compound identifiers}
+\item{drugs}{A vector of compound identifiers or compound/endpoint identifiers}
 
 \item{cell_lines}{A vector of cell line identifiers}
 }
