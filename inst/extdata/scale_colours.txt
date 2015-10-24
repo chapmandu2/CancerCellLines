@@ -1,0 +1,1 @@
+Type	Level	Colouraffy	min	blueaffy	mean	whiteaffy	max	redcn	min	bluecn	mean	whitecn	max	redcosmicclp	min	lightgreencosmicclp	max	darkgreenhybcap	min	lightbluehybcap	max	darkblueresp	min	redresp	mean	yellowresp	max	green

@@ -13,11 +13,12 @@ getDrugData_CCLE <- function(con, drugs, cell_lines) {
 
 drugs.sql <- paste(drugs, collapse="','")
 cell_lines.sql <- paste(cell_lines, collapse="','")
-sql <- sprintf("select CCLE_name, Compound as ID, 'resp' as Type, EC50_uM as original, EC50_uM as value
+sql <- sprintf("select CCLE_name, Compound as ID, 'resp' as Type, EC50_uM as original
                from ccle_drug_data
                where CCLE_name IN ('%s') and Compound IN ('%s')", cell_lines.sql, drugs.sql)
 out <- dbGetQuery(con, sql)
-out <- out %>% mutate_each(funs(as.character), -value) %>% mutate_each(funs(as.numeric), value)
+out <- out %>% mutate(value=6-log10(original)) %>%
+  mutate_each(funs(as.character), -value) %>% mutate_each(funs(as.numeric), value)
 return(out)
 
 }

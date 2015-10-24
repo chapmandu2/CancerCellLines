@@ -1,0 +1,89 @@
+---
+title: "Visualisations Vignette for CancerCellLines Package"
+author: "Phil Chapman"
+date: "October 24, 2015"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{"Visualisations Vignette for CancerCellLines Package"}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+```{r, echo=FALSE, message=FALSE}
+library(CancerCellLines)
+```
+
+## Introduction
+This Vignette follows on from the Overview vignette and assumes that the user has already set up the SQLite database containing at least the CCLE data - this vignette won't work from the toy database!
+
+## Setup
+Connect to the database and generate SQLiteConnection and dplyr connection objects for convenience.
+```{r}
+dbpath <- '~/BigData/CellLineData/CancerCellLines.db'
+full_con <- setupSQLite(dbpath)
+dplyr_con <- src_sqlite(full_con@dbname)
+```
+
+## Example 1: Melanoma heatmap with MEK and BRAF inhibitors
+We are interested in looking at some important melanoma genes and compounds that act through them  We can use the dplyr interface to easily populate a cell line vector with all of the melanoma cell lines.
+
+```{r}
+    #specify the genes
+    ex1_genes <- c('BRAF', 'NRAS', 'CRAF', 'TP53')
+  
+    #get the melanoma cell lines
+    ex1_cell_lines <- dplyr_con %>% tbl('ccle_sampleinfo') %>% dplyr::filter(Site_primary=='skin') %>%
+       collect %>% as.data.frame
+    ex1_cell_lines <- ex1_cell_lines$CCLE_name
+    ex1_cell_lines[1:10]
+    
+    #get BRAF and MEK inhibitors
+    ex1_drugs <- c('AZD6244','PLX4720','PD-0325901')
+    
+```
+
+Next we can make data frames for the genes, drugs and cell lines that we're interested int:
+```{r fig.width=6, fig.height=6}
+    #make a tall frame
+    ex1_tall_df <- make_tall_df(full_con, ex1_genes, ex1_cell_lines, ex1_drugs)
+    ex1_tall_df
+    
+    #convert this into a wide data frame
+    ex1_wide_df <- ex1_tall_df %>% make_wide_df
+    ex1_wide_df
+    
+    #compare the drug activities
+    pairs(~AZD6244_resp+PLX4720_resp+`PD-0325901_resp`, ex1_wide_df)
+    
+```
+   
+Whilst the wide data frame is useful for modelling, it's the tall data frame that is more useful for plotting since it's in a tidy format (long and thin).  Let's make a heatmap using the built in `make_heatmap` function:
+```{r fig.width=6, fig.height=6}
+    #make a heatmap!
+    make_heatmap(ex1_tall_df)
+    
+```
+
+Cell lines are plotted as rows and features as columns.  The response data is always plotted to the left, with the most sensitive cell lines at the bottom in green, and the least sensitive at the top in red.  Affy and copy number data is plotted from blue (low) to red (high) whilst mutation data is plotted as light colours for wild type and dark colours for mutant.
+
+We also have some degree of control over the order of the x and y axes.  For example, if we want the cell lines to be ordered on the response to PLX4720, we can specify this:
+
+```{r fig.width=6, fig.height=6}
+    make_heatmap(ex1_tall_df, order_feature='PLX4720_resp')
+```
+
+
+## Future directions
+
+To do:   
+- detail plot of response vs a single feature   
+- shiny versions of visualisations to allow interactions   
+- modelling functions based on wide data frame   
+
+
+## Session Info
+```{r}
+   sessionInfo() 
+```
+
