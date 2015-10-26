@@ -1,7 +1,7 @@
 Package: CancerCellLines
 Type: Package
 Title: Provides data and classes for accessing public domain cancer cell line data (short line)
-Version: 0.4.0
+Version: 0.4.1
 Date: 2015-10-24
 Author: Phil Chapman
 Maintainer: Who to complain to <phil.chapman@cruk.manchester.ac.uk>
