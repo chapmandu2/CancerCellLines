@@ -77,14 +77,14 @@ We also have some degree of control over the order of the x and y axes.  For exa
 
 Can also use shiny to launch an interactive visualisation.  Specify the response data and good to go:
 
-```{r}
+```{r eval=FALSE}
    
     dietlein_data_fn <- system.file("extdata", "Dietlein2014_supp_table_1.txt", package = "CancerCellLines")
     dietlein_data <- read.table(dietlein_data_fn, header=T, sep='\t', stringsAsFactors=F)
     head(dietlein_data)
     dietlein_data <- dietlein_data %>% 
       filter(nchar(CCLE_name) > 1) %>% 
-      transmute(unified_id=CCLE_name, compound_id='KU60648', endpoint='pGI50', original=GI50, value=-log10(GI50))     
+      transmute(unified_id=CCLE_name, compound_id='KU60648', endpoint='pGI50', original=GI50, value=9-log10(GI50))     
     head(dietlein_data)
 
     full_con <- setupSQLite('~/BigData/CellLineData/CancerCellLines.db')

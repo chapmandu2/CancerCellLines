@@ -74,23 +74,22 @@ plotAppUI <- function () {
   fluidPage(
     sidebarLayout(
       sidebarPanel(
-        helpText("blah blah"),
+        helpText("Correlate genomic and response data"),
         textInput("geneid", label = h3("Enter Gene Name"),
                   value = "TP53"),
         uiOutput('respUI'),
         radioButtons("data_type", label = h3("Select a genomic data type"),
-                     choices = list("Affy" = 'affy', "CCLE hybcap" = 'hybcap'),
+                     choices = list("Affy" = 'affy', "CCLE hybcap" = 'hybcap', "Cosmic CLP" = 'cosmicclp'),
                      selected = 'affy'),
         uiOutput('tissuesUI'),
-       # h3('Other options'),
-       # checkboxInput("log2", label = "Log2 scale", value = TRUE)
-        submitButton('Submit')
+        radioButtons("output_option", label = h3("Generate"),
+                     choices = list('Plot 1' = 1, 'Plot 2'=2, 'Data'=3),
+                     selected = 1)
+       # submitButton('Submit')
       ),
-      mainPanel(textOutput('text1'),
-                plotOutput("plot1"),
-                tableOutput('df')
+      uiOutput('resultsUI')
 
-      )
+
     )
   )
 }
@@ -125,7 +124,7 @@ plotAppServer <- function(input, output, con, drug_df) {
 
     checkboxGroupInput("tissue", label = h3("Select a tissue type"),
                  choices = tissues,
-                 selected = tissues[1])
+                 selected = tissues)
 
   })
 
@@ -143,6 +142,19 @@ plotAppServer <- function(input, output, con, drug_df) {
 
   })
 
+  output$resultsUI <- renderUI({
+    mainPanel(#textOutput('text1'),
+              if (input$output_option == 1) {
+                plotOutput("plot1")
+              } else if (input$output_option == 2) {
+                plotOutput("plot2")
+              } else {
+                tableOutput('df')
+              }
+
+    )
+  })
+
     output$text1 <- renderText({
       sprintf("Tissue is length: %s", length(input$tissue))
     })
@@ -153,22 +165,56 @@ plotAppServer <- function(input, output, con, drug_df) {
   })
 
   output$plot1 <- renderPlot({
-    if(input$data_type == 'hybcap') {
-      ggplot(proc_data(), aes(x=as.factor(feature_value), y=resp_value) ) + geom_boxplot() + facet_wrap(~tissue)
+
+    plot_data <- proc_data() %>% arrange(resp_value)
+
+    if(input$data_type %in% c('hybcap', 'cosmicclp')) {
+      ggplot(plot_data, aes(x=as.factor(feature_value), y=resp_value) ) +
+        geom_boxplot(outlier.size=0, aes(colour=as.factor(feature_value))) +
+        geom_point(aes(fill=as.factor(feature_value)), shape=21, size=rel(2), position = position_jitter(width=0.1)) +
+        facet_wrap(~tissue) + xlab(unique(plot_data$feature_name)) + ylab(unique(plot_data$resp_id)) +
+        theme_bw()
     } else {
-      ggplot(proc_data(), aes(x=feature_value, y=resp_value) ) + geom_point() + stat_smooth(method = 'lm') + facet_wrap(~tissue)
+      ggplot(plot_data, aes(x=feature_value, y=resp_value) ) +
+        geom_point(aes(fill=scale(feature_value)), shape=21, size=rel(2)) +
+        stat_smooth(method = 'lm') +
+        scale_fill_gradient2(low='blue', mid='white', high='red') +
+        facet_wrap(~tissue) + xlab(unique(plot_data$feature_name)) + ylab(unique(plot_data$resp_id)) +
+        theme_bw() + theme(legend.position='none')
+    }
+
+  })
+
+  output$plot2 <- renderPlot({
+
+    plot_data <- proc_data() %>% arrange(resp_value)
+
+    if(input$data_type %in% c('hybcap', 'cosmicclp')) {
+      ggplot(plot_data, aes(x=CCLE_name, y=resp_value, fill=as.factor(feature_value)) ) +
+        geom_bar(stat='identity') +
+        scale_x_discrete(limits=plot_data$CCLE_name) +
+        facet_wrap(~tissue) + ylab(unique(plot_data$resp_id)) +
+        theme_bw() + theme(axis.text.x=element_text(size=0))
+    } else {
+      ggplot(plot_data, aes(x=CCLE_name, y=resp_value, fill=scale(feature_value)) ) +
+        geom_bar(stat='identity') +
+        scale_x_discrete(limits=plot_data$CCLE_name) +
+        scale_fill_gradient2(low='blue', mid='white', high='red') +
+        facet_wrap(~tissue)  + ylab(unique(plot_data$resp_id)) +
+        theme_bw() + theme(legend.position='none',  axis.text.x=element_text(size=0))
     }
 
   })
 
 }
 
-#' Add title
+#' Runs the Shiny visualisation
 #'
-#' add description
+#' Takes a user supplied data frame of drug response data and combines it with user defined gene feature data
 #'
+#' @param con A \code{SQLiteConnection} object to the database
 #' @param drug_df A data frame containing the drug data
-#' @return returns
+#' @return Launches an interactive Shiny application
 #' @export
 run_shiny_app <- function(con, drug_df) {
 

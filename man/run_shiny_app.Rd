@@ -2,17 +2,19 @@
 % Please edit documentation in R/ShinyVisFunctions.R
 \name{run_shiny_app}
 \alias{run_shiny_app}
-\title{Add title}
+\title{Runs the Shiny visualisation}
 \usage{
 run_shiny_app(con, drug_df)
 }
 \arguments{
+\item{con}{A \code{SQLiteConnection} object to the database}
+
 \item{drug_df}{A data frame containing the drug data}
 }
 \value{
-returns
+Launches an interactive Shiny application
 }
 \description{
-add description
+Takes a user supplied data frame of drug response data and combines it with user defined gene feature data
 }
 
