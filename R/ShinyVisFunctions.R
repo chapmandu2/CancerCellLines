@@ -81,10 +81,13 @@ plotAppUI <- function () {
         radioButtons("data_type", label = h3("Select a genomic data type"),
                      choices = list("Affy" = 'affy', "CCLE hybcap" = 'hybcap', "Cosmic CLP" = 'cosmicclp'),
                      selected = 'affy'),
-        uiOutput('tissuesUI'),
         radioButtons("output_option", label = h3("Generate"),
                      choices = list('Plot 1' = 1, 'Plot 2'=2, 'Data'=3),
-                     selected = 1)
+                     selected = 1),
+        radioButtons("facet_option", label = h3("Facet by tissue?"),
+                     choices = list('No' = 1, 'Yes'=2),
+                     selected = 1),
+        uiOutput('tissuesUI')
        # submitButton('Submit')
       ),
       uiOutput('resultsUI')
@@ -166,42 +169,68 @@ plotAppServer <- function(input, output, con, drug_df) {
 
   output$plot1 <- renderPlot({
 
-    plot_data <- proc_data() %>% arrange(resp_value)
+    plot_data <- proc_data() %>% arrange(desc(resp_value))
 
     if(input$data_type %in% c('hybcap', 'cosmicclp')) {
-      ggplot(plot_data, aes(x=as.factor(feature_value), y=resp_value) ) +
-        geom_boxplot(outlier.size=0, aes(colour=as.factor(feature_value))) +
-        geom_point(aes(fill=as.factor(feature_value)), shape=21, size=rel(2), position = position_jitter(width=0.1)) +
-        facet_wrap(~tissue) + xlab(unique(plot_data$feature_name)) + ylab(unique(plot_data$resp_id)) +
-        theme_bw()
+      p <- ggplot(plot_data, aes(x=as.factor(feature_value), y=resp_value) ) +
+              geom_boxplot(outlier.size=0, aes(colour=as.factor(feature_value))) +
+              geom_point(aes(fill=as.factor(feature_value)), shape=21, size=rel(2), position = position_jitter(width=0.1)) +
+              xlab(unique(plot_data$feature_name)) + ylab(unique(plot_data$resp_id)) +
+              theme_bw()
+
+      if (input$facet_option == 2) {
+        p <- p + facet_wrap(~tissue)
+      }
+
+      return(p)
+
     } else {
-      ggplot(plot_data, aes(x=feature_value, y=resp_value) ) +
-        geom_point(aes(fill=scale(feature_value)), shape=21, size=rel(2)) +
-        stat_smooth(method = 'lm') +
-        scale_fill_gradient2(low='blue', mid='white', high='red') +
-        facet_wrap(~tissue) + xlab(unique(plot_data$feature_name)) + ylab(unique(plot_data$resp_id)) +
-        theme_bw() + theme(legend.position='none')
-    }
+      p <- ggplot(plot_data, aes(x=feature_value, y=resp_value) ) +
+              geom_point(aes(fill=scale(feature_value)), shape=21, size=rel(2)) +
+              stat_smooth(method = 'lm') +
+              scale_fill_gradient2(low='blue', mid='white', high='red') +
+              xlab(unique(plot_data$feature_name)) + ylab(unique(plot_data$resp_id)) +
+              theme_bw() + theme(legend.position='none')
+
+      if (input$facet_option == 2) {
+        p <- p + facet_wrap(~tissue)
+      }
+      return(p)
+
+      }
 
   })
 
   output$plot2 <- renderPlot({
 
-    plot_data <- proc_data() %>% arrange(resp_value)
+    plot_data <- proc_data() %>% filter(!is.na(resp_value)) %>% arrange(desc(resp_value))
 
     if(input$data_type %in% c('hybcap', 'cosmicclp')) {
-      ggplot(plot_data, aes(x=CCLE_name, y=resp_value, fill=as.factor(feature_value)) ) +
+      p <- ggplot(plot_data, aes(x=CCLE_name, y=resp_value, fill=as.factor(feature_value)) ) +
         geom_bar(stat='identity') +
         scale_x_discrete(limits=plot_data$CCLE_name) +
-        facet_wrap(~tissue) + ylab(unique(plot_data$resp_id)) +
+        ylab(unique(plot_data$resp_id)) +
         theme_bw() + theme(axis.text.x=element_text(size=0))
+
+      if (input$facet_option == 2) {
+        p <- p + facet_wrap(~tissue)
+      }
+
+      return(p)
+
     } else {
-      ggplot(plot_data, aes(x=CCLE_name, y=resp_value, fill=scale(feature_value)) ) +
+      p <- ggplot(plot_data, aes(x=CCLE_name, y=resp_value, fill=scale(feature_value)) ) +
         geom_bar(stat='identity') +
         scale_x_discrete(limits=plot_data$CCLE_name) +
         scale_fill_gradient2(low='blue', mid='white', high='red') +
-        facet_wrap(~tissue)  + ylab(unique(plot_data$resp_id)) +
+        ylab(unique(plot_data$resp_id)) +
         theme_bw() + theme(legend.position='none',  axis.text.x=element_text(size=0))
+
+      if (input$facet_option == 2) {
+        p <- p + facet_wrap(~tissue)
+      }
+
+      return(p)
     }
 
   })
