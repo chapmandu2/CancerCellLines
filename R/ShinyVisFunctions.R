@@ -79,15 +79,14 @@ shinyRespVsGeneticUI <- function () {
         textInput("geneid", label = h3("Enter Gene Name"),
                   value = "TP53"),
         uiOutput('respUI'),
-        radioButtons("data_type", label = h3("Select a genomic data type"),
+        selectInput("data_type", label = h3("Select a genomic data type"),
                      choices = list("Affy" = 'affy', "CCLE hybcap" = 'hybcap', "Cosmic CLP" = 'cosmicclp'),
                      selected = 'affy'),
-        radioButtons("output_option", label = h3("Generate"),
+        selectInput("output_option", label = h3("Generate"),
                      choices = list('Plot 1' = 1, 'Plot 2'=2, 'Data'=3),
                      selected = 1),
-        radioButtons("facet_option", label = h3("Facet by tissue?"),
-                     choices = list('No' = 1, 'Yes'=2),
-                     selected = 1),
+        h3("Plot Options:"),
+        checkboxInput("facet_option", label = "Facet by tissue"),
         uiOutput('tissuesUI')
        # submitButton('Submit')
       ),
@@ -126,9 +125,12 @@ shinyRespVsGeneticServer <- function(input, output, con, drug_df) {
 
     tissues <- tissues.df$tissue
 
-    checkboxGroupInput("tissue", label = h3("Select a tissue type"),
+    selectInput("tissue", label = h3("Select a tissue type"),
                  choices = tissues,
-                 selected = tissues)
+                 selected = tissues,
+                 multiple = TRUE,
+                 selectize = FALSE,
+                 size=10)
 
   })
 
@@ -140,7 +142,7 @@ shinyRespVsGeneticServer <- function(input, output, con, drug_df) {
 
     resps <- resp.df$resp_id
 
-    radioButtons("respid", label = h3("Select a response variable"),
+    selectInput("respid", label = h3("Select a response variable"),
                  choices = resps,
                  selected = resps[1])
 
@@ -179,7 +181,7 @@ shinyRespVsGeneticServer <- function(input, output, con, drug_df) {
               xlab(unique(plot_data$feature_name)) + ylab(unique(plot_data$resp_id)) +
               theme_bw()
 
-      if (input$facet_option == 2) {
+      if (input$facet_option) {
         p <- p + facet_wrap(~tissue)
       }
 
@@ -193,7 +195,7 @@ shinyRespVsGeneticServer <- function(input, output, con, drug_df) {
               xlab(unique(plot_data$feature_name)) + ylab(unique(plot_data$resp_id)) +
               theme_bw() + theme(legend.position='none')
 
-      if (input$facet_option == 2) {
+      if (input$facet_option) {
         p <- p + facet_wrap(~tissue)
       }
       return(p)
@@ -211,9 +213,13 @@ shinyRespVsGeneticServer <- function(input, output, con, drug_df) {
         geom_bar(stat='identity') +
         scale_x_discrete(limits=plot_data$CCLE_name) +
         ylab(unique(plot_data$resp_id)) +
-        theme_bw() + theme(axis.text.x=element_text(size=0))
+        theme_bw() + theme(axis.text.x = element_text(size=rel(1), angle=330, hjust=0, vjust=1))
 
-      if (input$facet_option == 2) {
+      if(nrow(plot_data) > 30 | input$facet_option) {
+        p <- p + theme(axis.text.x=element_text(size=0))  #remove cell line id's if more than 30 cell lines
+      }
+
+      if (input$facet_option) {
         p <- p + facet_wrap(~tissue)
       }
 
@@ -225,9 +231,13 @@ shinyRespVsGeneticServer <- function(input, output, con, drug_df) {
         scale_x_discrete(limits=plot_data$CCLE_name) +
         scale_fill_gradient2(low='blue', mid='white', high='red') +
         ylab(unique(plot_data$resp_id)) +
-        theme_bw() + theme(legend.position='none',  axis.text.x=element_text(size=0))
+        theme_bw() + theme(legend.position='none', axis.text.x = element_text(size=rel(1), angle=330, hjust=0, vjust=1))
 
-      if (input$facet_option == 2) {
+      if(nrow(plot_data) > 30 | input$facet_option) {
+        p <- p + theme(axis.text.x=element_text(size=0))  #remove cell line id's if more than 30 cell lines
+      }
+
+      if (input$facet_option) {
         p <- p + facet_wrap(~tissue)
       }
 
