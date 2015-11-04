@@ -46,11 +46,11 @@ We are interested in looking at some important melanoma genes and compounds that
 Next we can make data frames for the genes, drugs and cell lines that we're interested int:
 ```{r fig.width=6, fig.height=6}
     #make a tall frame
-    ex1_tall_df <- make_tall_df(full_con, ex1_genes, ex1_cell_lines, ex1_drugs)
+    ex1_tall_df <- makeTallDataFrame(full_con, ex1_genes, ex1_cell_lines, ex1_drugs)
     ex1_tall_df
     
     #convert this into a wide data frame
-    ex1_wide_df <- ex1_tall_df %>% make_wide_df
+    ex1_wide_df <- ex1_tall_df %>% makeWideFromTallDataFrame
     ex1_wide_df
     
     #compare the drug activities
@@ -58,10 +58,10 @@ Next we can make data frames for the genes, drugs and cell lines that we're inte
     
 ```
    
-Whilst the wide data frame is useful for modelling, it's the tall data frame that is more useful for plotting since it's in a tidy format (long and thin).  Let's make a heatmap using the built in `make_heatmap` function:
+Whilst the wide data frame is useful for modelling, it's the tall data frame that is more useful for plotting since it's in a tidy format (long and thin).  Let's make a heatmap using the built in `plotHeatmap` function:
 ```{r fig.width=6, fig.height=6}
     #make a heatmap!
-    make_heatmap(ex1_tall_df)
+    plotHeatmap(ex1_tall_df)
     
 ```
 
@@ -70,7 +70,7 @@ Cell lines are plotted as rows and features as columns.  The response data is al
 We also have some degree of control over the order of the x and y axes.  For example, if we want the cell lines to be ordered on the response to PLX4720, we can specify this:
 
 ```{r fig.width=6, fig.height=6}
-    make_heatmap(ex1_tall_df, order_feature='PLX4720_resp')
+    plotHeatmap(ex1_tall_df, order_feature='PLX4720_resp')
 ```
 
 ## Interactive visualisations
@@ -88,7 +88,7 @@ Can also use shiny to launch an interactive visualisation.  Specify the response
     head(dietlein_data)
 
     full_con <- setupSQLite('~/BigData/CellLineData/CancerCellLines.db')
-    run_shiny_app(con=full_con, drug_df=dietlein_data)
+    shinyRespVsGeneticApp(con=full_con, drug_df=dietlein_data)
      
 ```
 

@@ -140,31 +140,31 @@ getDrugData_custom(dietlein_data, drugs = 'KU60648_pGI50', cell_lines = c('DMS11
 ## Combining different data types
 These functions all have a standard output format which means that data from different assay types can be merged and plotted or analysed together.
 
-The `make_tall_df` function does this merging in a standard way and returns the the data in a 'tidy' format that is useful for plotting in ggplot2 or further manipulation with tidyr.  
+The `makeTallDataFrame` function does this merging in a standard way and returns the the data in a 'tidy' format that is useful for plotting in ggplot2 or further manipulation with tidyr.  
 
 ```{r}
-make_tall_df(test_db, symbols, cell_lines, drugs)
+makeTallDataFrame(test_db, symbols, cell_lines, drugs)
 ```
 
-The `make_wide_df` function can take the output from `make_tall_df` and create a wide or matrix-like data frame which is a conveninent input for modelling packages such as caret.
+The `makeWideFromTallDataFrame` function can take the output from `makeTallDataFrame` and create a wide or matrix-like data frame which is a conveninent input for modelling packages such as caret.
 
 ```{r}
-my_df <- make_tall_df(test_db, symbols, cell_lines, drugs)
-make_wide_df(my_df)
+my_df <- makeTallDataFrame(test_db, symbols, cell_lines, drugs)
+makeWideFromTallDataFrame(my_df)
 
 ```
 
-Finally, there is the `make_df` function which generates a wide data frame directly.
+Finally, there is the `makeWideDataFrame` function which generates a wide data frame directly.
 
 ```{r}
-make_df(test_db, symbols, cell_lines, drugs)
+makeWideDataFrame(test_db, symbols, cell_lines, drugs)
 ```
 
 The `data_types` parameter can be used to control which data types are returned, and the `drug_df` parameter is used to provide custom drug information as per the `getDrugData_custom` function description above
 
 ```{r}
-make_df(test_db, symbols, cell_lines, drugs, data_types=c('hybcap', 'affy', 'resp'))
-make_df(test_db, symbols, 
+makeWideDataFrame(test_db, symbols, cell_lines, drugs, data_types=c('hybcap', 'affy', 'resp'))
+makeWideDataFrame(test_db, symbols, 
         cell_lines = c('DMS114_LUNG', 'A549_LUNG'), 
         drugs='KU60648_pGI50', data_types=c('hybcap', 'resp'), drug_df=dietlein_data)
 
@@ -233,13 +233,13 @@ To really put it through its paces try retrieving data from 2000 genes in 200 ce
     test_cosmicclp <- getCosmicCLPData(full_con, random_genes, random_cell_lines)
     
     #make a big data frame
-    big_df <- make_df(full_con, random_genes, random_cell_lines, random_drugs)
+    big_df <- makeWideDataFrame(full_con, random_genes, random_cell_lines, random_drugs)
     
     #without resp data
-    big_df <- make_df(full_con, random_genes, random_cell_lines, drugs=NULL, data_types=c('affy', 'cn', 'hybcap', 'cosmicclp'))
+    big_df <- makeWideDataFrame(full_con, random_genes, random_cell_lines, drugs=NULL, data_types=c('affy', 'cn', 'hybcap', 'cosmicclp'))
     
     #with custom resp data
-    big_df <- make_df(full_con, random_genes, cell_lines = c('DMS114_LUNG', 'A549_LUNG'), drugs = 'KU60648_pGI50', drug_df = dietlein_data)
+    big_df <- makeWideDataFrame(full_con, random_genes, cell_lines = c('DMS114_LUNG', 'A549_LUNG'), drugs = 'KU60648_pGI50', drug_df = dietlein_data)
 
   
 ```

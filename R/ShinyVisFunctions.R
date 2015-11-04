@@ -9,7 +9,7 @@
 #' @param cell_lines A vector of cell line identifiers
 #' @return A \code{data.frame} containing the drug response data for the requested compounds and cell lines
 #' @export
-make_shiny_df <- function(con, gene, cell_lines, drug, data_types=c('affy', 'cn', 'hybcap', 'cosmicclp'), drug_df=NULL) {
+makeRespVsGeneticDataFrame <- function(con, gene, cell_lines, drug, data_types=c('affy', 'cn', 'hybcap', 'cosmicclp'), drug_df=NULL) {
 
   #gene <- 'TP53'
   #drug <- 'GSKMI00000714_pIC50'
@@ -17,7 +17,7 @@ make_shiny_df <- function(con, gene, cell_lines, drug, data_types=c('affy', 'cn'
   #data_types <- c('affy', 'hybcap')
   #drug_df <- dnmt1_data
 
-  gene_data <- make_tall_df(con,
+  gene_data <- makeTallDataFrame(con,
                             gene,
                             cell_lines,
                             drug,
@@ -40,6 +40,7 @@ make_shiny_df <- function(con, gene, cell_lines, drug, data_types=c('affy', 'cn'
     inner_join(resp_data, by='CCLE_name') %>%
     inner_join(cls.df, by='CCLE_name')
 
+  return(plot_data)
 }
 
 #' Convert tissue to cell lines
@@ -69,7 +70,7 @@ get_shiny_cell_lines <- function (con, tissue_id) {
 
 }
 
-plotAppUI <- function () {
+shinyRespVsGeneticUI <- function () {
 
   fluidPage(
     sidebarLayout(
@@ -97,14 +98,14 @@ plotAppUI <- function () {
   )
 }
 
-plotAppServer <- function(input, output, con, drug_df) {
+shinyRespVsGeneticServer <- function(input, output, con, drug_df) {
 
   proc_cls <- reactive({
     intersect(get_shiny_cell_lines(con, input$tissue), drug_df$unified_id)
   })
 
   proc_data <- reactive({
-    make_shiny_df(con, gene=input$geneid,
+    makeRespVsGeneticDataFrame(con, gene=input$geneid,
                   cell_lines=proc_cls(),
                   drug=input$respid,
                   data_types = input$data_type,
@@ -245,12 +246,12 @@ plotAppServer <- function(input, output, con, drug_df) {
 #' @param drug_df A data frame containing the drug data
 #' @return Launches an interactive Shiny application
 #' @export
-run_shiny_app <- function(con, drug_df) {
+shinyRespVsGeneticApp <- function(con, drug_df) {
 
   shinyApp(
-    ui = plotAppUI(),
+    ui = shinyRespVsGeneticUI(),
     server = function(input, output) {
-      plotAppServer(input, output, con, drug_df)
+      shinyRespVsGeneticServer(input, output, con, drug_df)
     }
   )
 }

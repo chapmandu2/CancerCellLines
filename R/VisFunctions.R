@@ -1,11 +1,11 @@
 #' Make a heatmap from a tall data frame
 #'
-#' This function creates a heatmap from the output of the make_tall_df function.
+#' This function creates a heatmap from the output of the makeTallDataFrame function.
 #'
-#' @param tall_df A data frame from make_tall_df
+#' @param tall_df A data frame from makeTallDataFrame
 #' @return A ggplot2 object
 #' @export
-make_heatmap <- function(tall_df, order_feature=NULL) {
+plotHeatmap <- function(tall_df, order_feature=NULL) {
 
   #scale the plot data by feature name
   plot_data <- tall_df %>% mutate(fn=paste(ID, Type, sep='_')) %>%
