@@ -25,8 +25,12 @@ makeRespVsGeneticDataFrame <- function(con, gene, cell_lines, drug, data_types=c
                 transmute(CCLE_name, ID, feature_type=Type, feature_name=paste(ID, Type, sep="_"), feature_value=value)
 
   if (is.null(drug_df)) {
-    stop('Need a drug dataframe')
+    #if no drug data frame provided just use CCLE
+    ccle_drugs.df <- src_sqlite(con@dbname) %>% tbl("ccle_drug_data") %>% select(Compound) %>% distinct %>% collect
+    resp_data <- getDrugData_CCLE(con, drug, cell_lines) %>%
+      transmute(CCLE_name, resp_id=ID, resp_value=value)
   } else {
+    #if drug data provided then use that
     resp_data <- getDrugData_custom(drug_df, drug, cell_lines ) %>%
       transmute(CCLE_name, resp_id=ID, resp_value=value)
   }
@@ -51,7 +55,7 @@ makeRespVsGeneticDataFrame <- function(con, gene, cell_lines, drug, data_types=c
 #' @param cell_lines A vector of cell line identifiers
 #' @return A \code{vector} of cell lines for the provided tissue
 #' @export
-get_shiny_cell_lines <- function (con, tissue_id) {
+getTissueCellLines <- function (con, tissue_id) {
 
   cls.df <- src_sqlite(con@dbname) %>%
     tbl('ccle_sampleinfo') %>%
@@ -97,11 +101,36 @@ shinyRespVsGeneticUI <- function () {
   )
 }
 
-shinyRespVsGeneticServer <- function(input, output, con, drug_df) {
+shinyRespVsGeneticServer <- function(input, output, con, drug_df=NULL) {
 
+  #get the cell lines for the given tissues
   proc_cls <- reactive({
-    intersect(get_shiny_cell_lines(con, input$tissue), drug_df$unified_id)
+
+    if (is.null(drug_df)) {
+      intersect(getTissueCellLines(con, input$tissue), proc_resp_data()$CCLE_name)
+    } else {
+      intersect(getTissueCellLines(con, input$tissue), proc_resp_data()$CCLE_name)
+    }
+
   })
+
+  #get custom and database response data into a common format for reference of what cell lines/drugs are present
+  proc_resp_data <- reactive({
+
+    if (is.null(drug_df)) {
+      #if no drug data frame provided just use CCLE
+      ccle_drugs.df <- src_sqlite(con@dbname) %>% tbl("ccle_drug_data") %>% select(Compound, CCLE_name) %>% distinct %>% collect
+      resp_data <- getDrugData_CCLE(con, unique(ccle_drugs.df$Compound), unique(ccle_drugs.df$CCLE_name)) %>%
+        transmute(CCLE_name, resp_id=ID, resp_value=value)
+      return(resp_data)
+    } else {
+      #if drug data provided then use that
+      resp_data <- getDrugData_custom(drug_df, unique(drug_df$compound_id), unique(drug_df$unified_id) ) %>%
+        transmute(CCLE_name, resp_id=ID, resp_value=value)
+      return(resp_data)
+    }
+  })
+
 
   proc_data <- reactive({
     makeRespVsGeneticDataFrame(con, gene=input$geneid,
@@ -116,7 +145,7 @@ shinyRespVsGeneticServer <- function(input, output, con, drug_df) {
 
     tissues.df <- src_sqlite(con@dbname) %>%
       tbl('ccle_sampleinfo') %>%
-      filter(CCLE_name %in% drug_df$unified_id) %>%
+      filter(CCLE_name %in% proc_resp_data()$CCLE_name) %>%
       transmute(tissue=Site_primary) %>%
       collect %>%
       distinct() %>%
@@ -137,7 +166,7 @@ shinyRespVsGeneticServer <- function(input, output, con, drug_df) {
   #make a reactive response variable selection UI
   output$respUI <- renderUI({
 
-    resp.df <- drug_df %>% transmute(resp_id=paste(compound_id, endpoint, sep='_')) %>%
+    resp.df <- proc_resp_data() %>% select(resp_id) %>%
       distinct() %>% arrange(resp_id)
 
     resps <- resp.df$resp_id
@@ -256,7 +285,7 @@ shinyRespVsGeneticServer <- function(input, output, con, drug_df) {
 #' @param drug_df A data frame containing the drug data
 #' @return Launches an interactive Shiny application
 #' @export
-shinyRespVsGeneticApp <- function(con, drug_df) {
+shinyRespVsGeneticApp <- function(con, drug_df=NULL) {
 
   shinyApp(
     ui = shinyRespVsGeneticUI(),

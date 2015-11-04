@@ -4,7 +4,7 @@
 \alias{shinyRespVsGeneticApp}
 \title{Runs the Shiny visualisation}
 \usage{
-shinyRespVsGeneticApp(con, drug_df)
+shinyRespVsGeneticApp(con, drug_df = NULL)
 }
 \arguments{
 \item{con}{A \code{SQLiteConnection} object to the database}
