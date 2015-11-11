@@ -73,9 +73,54 @@ We also have some degree of control over the order of the x and y axes.  For exa
     plotHeatmap(ex1_tall_df, order_feature='PLX4720_resp')
 ```
 
+## Example 2: EGFR inhibitors vs EGFR mutation status or expression 
+This time we are interested in how the expression and mutation status of EGFR interacts with the response to the EGFR inhibitor, erlotinib.  Let's dive right in using the `makeRespVsGeneticDataFrame` function to make a data frame suitable for the `plotRespVsGeneticHist` and `plotRespVsGeneticScatter` functions:
+
+```{r fig.width=6, fig.height=4}
+   
+    #get all cell lines
+    ex2_cell_lines <- dplyr_con %>% tbl('ccle_sampleinfo') %>% 
+       collect %>% as.data.frame
+    ex2_cell_lines <- ex2_cell_lines$CCLE_name
+    
+    #make a data frame for the affy analysis
+    df <- makeRespVsGeneticDataFrame(full_con, gene='EGFR',
+                               cell_lines=ex2_cell_lines,
+                               drug='Erlotinib',
+                               data_types = 'affy',
+                               drug_df = NULL) 
+    
+    #scatter plot of EGFR expression vs Erlotinib response
+    plotRespVsGeneticHist(df, 'affy', FALSE)
+    
+    #histogram of Erlotinib response coloured by EGFR expression
+    plotRespVsGeneticPoint(df, 'affy', FALSE)
+    
+```
+
+## Example 3: BRAF inhibitors vs BRAF mutation status
+Now let's do a similar analysis with PLX4720 and BRAF mutation status:
+
+```{r fig.width=6, fig.height=4}
+
+    #make a data frame for the affy analysis
+    df <- makeRespVsGeneticDataFrame(full_con, gene='BRAF',
+                               cell_lines=ex2_cell_lines,
+                               drug='PLX4720',
+                               data_types = 'hybcap',
+                               drug_df = NULL) 
+    
+    #scatter plot of EGFR expression vs Erlotinib response
+    plotRespVsGeneticHist(df, 'hybcap', FALSE)
+    
+    #histogram of Erlotinib response coloured by EGFR expression
+    plotRespVsGeneticPoint(df, 'hybcap', FALSE)
+    
+```
+
 ## Interactive visualisations
 
-Can also use shiny to launch an interactive visualisation.  Specify the response data and good to go:
+There are also a series of shiny__ functions for interactive visualisations.  The response data can be fed into the shinyRespVsGeneticApp function as follows:
 
 ```{r eval=FALSE}
    
@@ -92,12 +137,19 @@ Can also use shiny to launch an interactive visualisation.  Specify the response
      
 ```
 
+Alternatively, if a custom dataset isn't defined CCLE will be used:
+
+```{r eval=FALSE}
+    shinyRespVsGeneticApp(con=full_con)
+```
+
+
+
 ## Future directions
 
 To do:   
-- detail plot of response vs a single feature   
-- shiny versions of visualisations to allow interactions   
-- modelling functions based on wide data frame   
+- GeneticVsGenetic
+- RespVsResp
 
 
 ## Session Info
