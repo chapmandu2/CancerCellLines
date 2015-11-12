@@ -15,7 +15,7 @@ importCCLE_hybcap(fn, con)
 TRUE or FALSE depending on whether the data has been written successfully
 }
 \description{
-This function imports the information in CCLE_hybrid_capture1650_hg19_NoCommonSNPs_NoNeutralVariants_CDS_2012.05.07.xlsx into the ccle_hybap table in the database.
+This function imports the information in CCLE_hybrid_capture1650_hg19_NoCommonSNPs_NoNeutralVariants_CDS_2012.05.07.maf into the ccle_hybap table in the database.
 Also indexes the table for fast retrieval.
 }
 

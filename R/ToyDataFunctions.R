@@ -53,18 +53,32 @@ maketoyCCLE_cn <- function (fn, pattern='_BREAST', outdir=getwd()) {
 
 maketoyCCLE_hybcap <- function (fn, pattern='_BREAST', outdir=getwd()) {
 
-  require(readxl)
-  require(xlsx)
-  fn <- '~/BigData/CellLineData/RawData/CCLE_hybrid_capture1650_hg19_NoCommonSNPs_NoNeutralVariants_CDS_2012.05.07.xlsx'
+  require(readr)
+  fn <- '~/BigData/CellLineData/RawData/CCLE_hybrid_capture1650_hg19_NoCommonSNPs_NoNeutralVariants_CDS_2012.05.07.maf'
   outdir <- '/Users/pchapman/Documents/2015 Projects/20150622 CancerCellLine Package/ToyData/'
 
-  data <- read_excel(fn, col_types=c('text', 'numeric', 'text', 'numeric', 'text', 'numeric', 'numeric', 'text', 'text', 'text',
-                                     'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text'))
+  data <- read_tsv(fn,
+                   col_names=c("Hugo_Symbol", "Entrez_Gene_Id", "Center", "NCBI_Build", "Chromosome",
+                               "Start_position", "End_position", "Strand", "Variant_Classification",
+                               "Variant_Type", "Reference_Allele", "Tumor_Seq_Allele1", "Tumor_Seq_Allele2",
+                               "dbSNP_RS", "dbSNP_Val_Status", "Tumor_Sample_Barcode", "Matched_Norm_Sample_Barcode",
+                               "Match_Norm_Seq_Allele1", "Match_Norm_Seq_Allele2", "Tumor_Validation_Allele1",
+                               "Tumor_Validation_Allele2", "Match_Norm_Validation_Allele1",
+                               "Match_Norm_Validation_Allele2", "Verification_Status", "Validation_Status",
+                               "Mutation_Status", "Sequencing_Phase", "Sequence_Source", "Validation_Method",
+                               "Score", "BAM_file", "Sequencer", "Genome_Change", "Annotation_Transcript",
+                               "Transcript_Strand", "cDNA_Change", "Codon_Change", "Protein_Change",
+                               "Other_Transcripts", "Refseq_mRNA_Id", "Refseq_prot_Id", "SwissProt_acc_Id",
+                               "SwissProt_entry_Id", "Description", "UniProt_AApos", "UniProt_Region",
+                               "UniProt_Site", "Alternative_allele_reads_count", "Reference_allele_reads_count",
+                               "X46vertebrates_AA_alignment_column", "Method"),
+                   col_types=paste(rep('c', 51), collapse=''),
+                   skip=1)
 
   out <- data [ grepl(pattern, data$Tumor_Sample_Barcode ) , ]
 
-  outfn <- gsub('.xlsx', '_toy.xlsx', basename(fn))
-  write.xlsx( out, paste0(outdir,outfn), row.names = FALSE)
+  outfn <- gsub('.maf', '_toy.maf', basename(fn))
+  write.table( out, paste0(outdir,outfn), row.names = FALSE, sep='\t')
 
 }
 

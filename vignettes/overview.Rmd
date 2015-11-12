@@ -1,7 +1,7 @@
 ---
 title: "Overview Vignette for CancerCellLines Package"
 author: "Phil Chapman"
-date: "October 23, 2015"
+date: "November 12, 2015"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{"Overview Vignette for CancerCellLines Package"}
@@ -164,9 +164,6 @@ The `data_types` parameter can be used to control which data types are returned,
 
 ```{r}
 makeWideDataFrame(test_db, symbols, cell_lines, drugs, data_types=c('hybcap', 'affy', 'resp'))
-makeWideDataFrame(test_db, symbols, 
-        cell_lines = c('DMS114_LUNG', 'A549_LUNG'), 
-        drugs='KU60648_pGI50', data_types=c('hybcap', 'resp'), drug_df=dietlein_data)
 
 ```
 
@@ -180,7 +177,7 @@ dbpath <- '~/BigData/CellLineData/CancerCellLines.db'
 infopath <- '~/BigData/CellLineData/RawData/CCLE_sample_info_file_2012-10-18.txt'
 affypath <- '~/BigData/CellLineData/RawData/CCLE_Expression_Entrez_2012-09-29.gct'
 cnpath <- '~/BigData/CellLineData/RawData/CCLE_copynumber_byGene_2012-09-29.txt'
-hybcappath <- '~/BigData/CellLineData/RawData/CCLE_hybrid_capture1650_hg19_NoCommonSNPs_NoNeutralVariants_CDS_2012.05.07.xlsx'
+hybcappath <- '~/BigData/CellLineData/RawData/CCLE_hybrid_capture1650_hg19_NoCommonSNPs_NoNeutralVariants_CDS_2012.05.07.maf'
 cosmicclppath <- '~/BigData/CellLineData/RawData/CosmicCLP_CompleteExport_v74.tsv'
 drugpath <- '~/BigData/CellLineData/RawData/CCLE_NP24.2009_Drug_data_2012.02.20.csv'
 idspath <- system.file("extdata", "CellLineIDNormalisationOct15.txt", package = "CancerCellLines")
