@@ -3,6 +3,8 @@
 #' Generate a histogram type plot that compares two genetic features in a set of cell lines
 #'
 #' @param df A data frame from the \code{makeGeneticVsGeneticDataFrame} function
+#' @param facet_option Whether or not to facet by tissue (default FALSE)
+#' @param label_option Whether or not to label cell lines (default FALSE)
 #' @return A ggplot2 object
 #' @export
 plotGeneticVsGeneticHist <- function(df, facet_option=FALSE, label_option=FALSE) {

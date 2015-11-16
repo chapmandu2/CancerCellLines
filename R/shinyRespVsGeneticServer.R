@@ -75,16 +75,19 @@ shinyRespVsGeneticServer <- function(input, output, con, drug_df=NULL) {
   })
 
   output$resultsUI <- renderUI({
-    mainPanel(#textOutput('text1'),
-      if (input$output_option == 1) {
-        plotOutput("plot1")
-      } else if (input$output_option == 2) {
-        plotOutput("plot2")
-      } else {
-        tableOutput('df')
-      }
 
-    )
+    if (input$output_option == 1) {
+      mainPanel(plotOutput("plot1", width=input$plot_width, height=input$plot_height),
+                downloadButton('downloadData', 'Download Data'))
+    } else if (input$output_option == 2) {
+      mainPanel(plotOutput("plot2", width=input$plot_width, height=input$plot_height),
+                downloadButton('downloadData', 'Download Data'))
+    } else {
+      mainPanel(tableOutput('df'),
+                downloadButton('downloadData', 'Download Data'))
+    }
+
+
   })
 
   output$text1 <- renderText({
@@ -107,5 +110,12 @@ shinyRespVsGeneticServer <- function(input, output, con, drug_df=NULL) {
     plotRespVsGeneticHist(proc_data(), input$data_type, input$facet_option)
 
   })
+
+  output$downloadData <- downloadHandler(
+    filename = sprintf("%s_%s_vs_%s_data.txt", input$geneid, input$data_type, input$respid),
+    content = function(file) {
+      write.table (proc_data(), file = file, sep = '\t', row.names = FALSE, col.names=TRUE)
+    }
+  )
 
 }

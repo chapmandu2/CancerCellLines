@@ -41,10 +41,10 @@ shinyGeneticVsGeneticServer <- function(input, output, con) {
   output$resultsUI <- renderUI({
 
       if (input$output_option == 1) {
-        mainPanel(plotOutput("plot1"),
+        mainPanel(plotOutput("plot1", width=input$plot_width, height=input$plot_height),
                   downloadButton('downloadData', 'Download Data'))
       } else if (input$output_option == 2) {
-        mainPanel(plotOutput("plot2"),
+        mainPanel(plotOutput("plot2", width=input$plot_width, height=input$plot_height),
                   downloadButton('downloadData', 'Download Data'))
       } else {
         mainPanel(tableOutput('df'),

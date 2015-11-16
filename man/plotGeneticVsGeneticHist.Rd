@@ -8,6 +8,10 @@ plotGeneticVsGeneticHist(df, facet_option = FALSE, label_option = FALSE)
 }
 \arguments{
 \item{df}{A data frame from the \code{makeGeneticVsGeneticDataFrame} function}
+
+\item{facet_option}{Whether or not to facet by tissue (default FALSE)}
+
+\item{label_option}{Whether or not to label cell lines (default FALSE)}
 }
 \value{
 A ggplot2 object

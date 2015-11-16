@@ -15,6 +15,8 @@ shinyRespVsGeneticUI <- function () {
                     selected = 1),
         h3("Plot Options:"),
         checkboxInput("facet_option", label = "Facet by tissue"),
+        sliderInput('plot_width', label = 'Control plot width', min=200, max=2000, value=600),
+        sliderInput('plot_height', label = 'Control plot height', min=200, max=2000, value=400),
         uiOutput('tissuesUI')
         # submitButton('Submit')
       ),

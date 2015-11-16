@@ -195,8 +195,6 @@ Alternatively, if a custom dataset isn't defined CCLE will be used:
 If you are just interested in the GeneticVsGenetic analysis functions then you can launch the `shinyGeneticVsGenetic` shiny app:
 
 ```{r eval=FALSE}
-    dbpath <- '~/BigData/CellLineData/CancerCellLines.db'
-    full_con <- setupSQLite(dbpath)
     shinyGeneticVsGeneticApp(con=full_con)    
 ```
 
