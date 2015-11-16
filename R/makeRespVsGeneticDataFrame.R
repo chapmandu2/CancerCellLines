@@ -1,26 +1,20 @@
-#' Get data for shiny
+#' Get RespVsGenetic data
 #'
-#' This function creates a \code{data.frame} suitable for the shiny app
+#' This function creates a \code{data.frame} suitable for the RespVsGenetic plots and shiny app
 #'
 #' @param con A \code{SQLiteConnection} object to the database
 #' @param drugs A vector of compound identifiers
 #' @param cell_lines A vector of cell line identifiers
-#' @return A \code{data.frame} containing the drug response data for the requested compounds and cell lines
+#' @return A \code{data.frame} containing the drug response and genetic data for the requested compounds and cell lines
 #' @export
 makeRespVsGeneticDataFrame <- function(con, gene, cell_lines, drug, data_types=c('affy', 'cn', 'hybcap', 'cosmicclp'), drug_df=NULL) {
-
-  #gene <- 'TP53'
-  #drug <- 'GSKMI00000714_pIC50'
-  #cell_lines <- cls.df$CCLE_name
-  #data_types <- c('affy', 'hybcap')
-  #drug_df <- dnmt1_data
 
   gene_data <- makeTallDataFrame(con,
                                  gene,
                                  cell_lines,
                                  drug,
                                  data_types) %>%
-    transmute(CCLE_name, ID, feature_type=Type, feature_name=paste(ID, Type, sep="_"), feature_value=value)
+    transmute(CCLE_name, ID, feature_type=Type, feature_name=paste(ID, Type, sep="_"), feature_value=value, feature_original=original)
 
   if (is.null(drug_df)) {
     #if no drug data frame provided just use CCLE

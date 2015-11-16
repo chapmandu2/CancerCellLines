@@ -118,6 +118,55 @@ Now let's do a similar analysis with PLX4720 and BRAF mutation status:
     
 ```
 
+## Example 4: Comparing SMARCA4 expression in SMARCA4 mutated cell lines to wildtype
+
+The GeneticVsGenetic suite of functions and plots allows genetic features to be compared against eachother, rather than against a response variable.  For example, looking at SMARCA4 in lung cancer:
+
+```{r fig.width=6, fig.height=6}
+    
+    #get lung cell lines
+    ex4_cell_lines <- dplyr_con %>% tbl('ccle_sampleinfo') %>% filter(Site_primary == 'lung') %>%
+       collect %>% as.data.frame
+    ex4_cell_lines <- ex4_cell_lines$CCLE_name
+
+    #make the data frame
+    gvg.df <- makeGeneticVsGeneticDataFrame(full_con, 
+                                            cell_lines=ex4_cell_lines,
+                                            gene1='SMARCA4',
+                                            data_type1='hybcap',
+                                            gene2='SMARCA4',
+                                            data_type2='affy') 
+    
+    #view the data frame
+    head(gvg.df)
+    
+    #do the plot
+    plotGeneticVsGeneticPoint(gvg.df)
+    
+    #all in one go with axes swapped
+    makeGeneticVsGeneticDataFrame(full_con, cell_lines=ex4_cell_lines, gene1='SMARCA4', data_type1='affy',
+                                            gene2='SMARCA4', data_type2='hybcap') %>% plotGeneticVsGeneticPoint()
+    
+    #two continuous
+    makeGeneticVsGeneticDataFrame(full_con, cell_lines=ex4_cell_lines, gene1='SMARCA4', data_type1='affy',
+                                            gene2='SMARCA4', data_type2='cn') %>% plotGeneticVsGeneticPoint()
+    
+    #two discrete
+    makeGeneticVsGeneticDataFrame(full_con, cell_lines=ex4_cell_lines, gene1='SMARCA4', data_type1='hybcap',
+                                            gene2='KRAS', data_type2='hybcap') %>% plotGeneticVsGeneticPoint()
+    
+    #also plot by cell line with one feature a y axis and another as fill colour
+    #continous + discrete
+    makeGeneticVsGeneticDataFrame(full_con, cell_lines=ex4_cell_lines, gene1='SMARCA4', data_type1='affy',
+                                            gene2='SMARCA4', data_type2='hybcap') %>% plotGeneticVsGeneticHist()
+    
+    #continous + continous
+    makeGeneticVsGeneticDataFrame(full_con, cell_lines=ex4_cell_lines[1:25], gene1='SMARCA4', data_type1='affy',
+                                            gene2='SMARCA4', data_type2='cn') %>% plotGeneticVsGeneticHist()
+    
+
+```
+
 ## Interactive visualisations
 
 There are also a series of shiny__ functions for interactive visualisations.  The response data can be fed into the shinyRespVsGeneticApp function as follows:

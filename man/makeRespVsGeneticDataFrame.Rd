@@ -2,7 +2,7 @@
 % Please edit documentation in R/makeRespVsGeneticDataFrame.R
 \name{makeRespVsGeneticDataFrame}
 \alias{makeRespVsGeneticDataFrame}
-\title{Get data for shiny}
+\title{Get RespVsGenetic data}
 \usage{
 makeRespVsGeneticDataFrame(con, gene, cell_lines, drug, data_types = c("affy",
   "cn", "hybcap", "cosmicclp"), drug_df = NULL)
@@ -15,9 +15,9 @@ makeRespVsGeneticDataFrame(con, gene, cell_lines, drug, data_types = c("affy",
 \item{drugs}{A vector of compound identifiers}
 }
 \value{
-A \code{data.frame} containing the drug response data for the requested compounds and cell lines
+A \code{data.frame} containing the drug response and genetic data for the requested compounds and cell lines
 }
 \description{
-This function creates a \code{data.frame} suitable for the shiny app
+This function creates a \code{data.frame} suitable for the RespVsGenetic plots and shiny app
 }
 
