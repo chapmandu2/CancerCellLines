@@ -10,9 +10,15 @@ makeRespVsGeneticDataFrame(con, gene, cell_lines, drug, data_types = c("affy",
 \arguments{
 \item{con}{A \code{SQLiteConnection} object to the database}
 
+\item{gene}{The gene symbol for the gene of interest}
+
 \item{cell_lines}{A vector of cell line identifiers}
 
-\item{drugs}{A vector of compound identifiers}
+\item{drug}{The drug of interest}
+
+\item{data_types}{A vector with default \code{c('affy', 'cn', 'hybcap', 'resp', 'cosmicclp')} to specify which data types should be returned.}
+
+\item{drug_df}{A \code{data.frame} containing input for the \code{getDrugData_custom} function}
 }
 \value{
 A \code{data.frame} containing the drug response and genetic data for the requested compounds and cell lines

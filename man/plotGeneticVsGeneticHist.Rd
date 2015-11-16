@@ -4,7 +4,7 @@
 \alias{plotGeneticVsGeneticHist}
 \title{Compare two genetic features (histogram)}
 \usage{
-plotGeneticVsGeneticHist(df, facet_option = FALSE)
+plotGeneticVsGeneticHist(df, facet_option = FALSE, label_option = FALSE)
 }
 \arguments{
 \item{df}{A data frame from the \code{makeGeneticVsGeneticDataFrame} function}

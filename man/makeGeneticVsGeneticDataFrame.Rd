@@ -12,7 +12,13 @@ makeGeneticVsGeneticDataFrame(con, cell_lines, gene1, gene2, data_type1,
 
 \item{cell_lines}{A vector of cell line identifiers}
 
-\item{drugs}{A vector of compound identifiers}
+\item{gene1}{The gene symbol of the primary gene}
+
+\item{gene2}{The gene symbol of the secondary gene}
+
+\item{data_type1}{The data type required for gene1: should be one of \code{'affy', 'cn', 'hybcap', 'cosmicclp'}}
+
+\item{data_type2}{The data type required for gene1: should be one of \code{'affy', 'cn', 'hybcap', 'cosmicclp'}}
 }
 \value{
 A \code{data.frame} containing the combined genetic data for the requested cell lines

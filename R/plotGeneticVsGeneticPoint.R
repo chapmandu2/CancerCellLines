@@ -15,7 +15,7 @@ plotGeneticVsGeneticPoint <- function(df, facet_option=FALSE) {
     plot_data <- plot_data %>% mutate(feature_value1=as.factor(feature_value1))
     p <- ggplot(plot_data, aes(x=feature_value1, y=feature_value2) ) +
       geom_boxplot(outlier.size=0, aes(colour=feature_value1)) +
-      geom_point(aes(fill=feature_value1), shape=21, size=rel(5), position = position_jitter(width=0.3)) +
+      geom_point(aes(fill=feature_value1), shape=21, size=rel(3), position = position_jitter(width=0.3)) +
       xlab(unique(plot_data$feature_name1)) + ylab(unique(plot_data$feature_name2)) +
       theme_bw()
 
@@ -24,14 +24,14 @@ plotGeneticVsGeneticPoint <- function(df, facet_option=FALSE) {
     plot_data <- plot_data %>% mutate(feature_value1=as.factor(feature_value1),
                                       feature_value2=as.factor(feature_value2))
     p <- ggplot(plot_data, aes(x=feature_value1, y=feature_value2) ) +
-      geom_point(aes(fill=feature_value1), shape=21, size=rel(5), position = position_jitter(width=0.3, height=0.3)) +
+      geom_point(aes(fill=feature_value1), shape=21, size=rel(3), position = position_jitter(width=0.3, height=0.3)) +
       xlab(unique(plot_data$feature_name1)) + ylab(unique(plot_data$feature_name2)) +
       theme_bw()
 
   } else if (dt1 =='cont' & dt2 == 'cont' ) {
 
     p <- ggplot(plot_data, aes(x=feature_value1, y=feature_value2) ) +
-      geom_point(aes(fill=scale(feature_value1)), shape=21, size=rel(5)) +
+      geom_point(aes(fill=scale(feature_value1)), shape=21, size=rel(3)) +
       stat_smooth(method = 'lm') +
       scale_fill_gradient2(low='blue', mid='white', high='red') +
       xlab(unique(plot_data$feature_name1)) + ylab(unique(plot_data$feature_name2)) +
@@ -42,7 +42,7 @@ plotGeneticVsGeneticPoint <- function(df, facet_option=FALSE) {
     plot_data <- plot_data %>% mutate(feature_value2=as.factor(feature_value2))
     p <- ggplot(plot_data, aes(x=feature_value2, y=feature_value1) ) +
       geom_boxplot(outlier.size=0, aes(colour=feature_value2)) +
-      geom_point(aes(fill=feature_value2), shape=21, size=rel(5), position = position_jitter(width=0.3)) +
+      geom_point(aes(fill=feature_value2), shape=21, size=rel(3), position = position_jitter(width=0.3)) +
       xlab(unique(plot_data$feature_name2)) + ylab(unique(plot_data$feature_name1)) + coord_flip() +
       theme_bw()
 

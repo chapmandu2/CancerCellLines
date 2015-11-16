@@ -3,8 +3,11 @@
 #' This function creates a \code{data.frame} suitable for the RespVsGenetic plots and shiny app
 #'
 #' @param con A \code{SQLiteConnection} object to the database
-#' @param drugs A vector of compound identifiers
+#' @param gene The gene symbol for the gene of interest
 #' @param cell_lines A vector of cell line identifiers
+#' @param drug The drug of interest
+#' @param data_types A vector with default \code{c('affy', 'cn', 'hybcap', 'resp', 'cosmicclp')} to specify which data types should be returned.
+#' @param drug_df A \code{data.frame} containing input for the \code{getDrugData_custom} function
 #' @return A \code{data.frame} containing the drug response and genetic data for the requested compounds and cell lines
 #' @export
 makeRespVsGeneticDataFrame <- function(con, gene, cell_lines, drug, data_types=c('affy', 'cn', 'hybcap', 'cosmicclp'), drug_df=NULL) {

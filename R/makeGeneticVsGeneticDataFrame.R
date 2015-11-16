@@ -3,8 +3,11 @@
 #' This function creates a \code{data.frame} suitable for the GeneticVsGenetic plots and shiny app
 #'
 #' @param con A \code{SQLiteConnection} object to the database
-#' @param drugs A vector of compound identifiers
 #' @param cell_lines A vector of cell line identifiers
+#' @param gene1 The gene symbol of the primary gene
+#' @param gene2 The gene symbol of the secondary gene
+#' @param data_type1 The data type required for gene1: should be one of \code{'affy', 'cn', 'hybcap', 'cosmicclp'}
+#' @param data_type2 The data type required for gene1: should be one of \code{'affy', 'cn', 'hybcap', 'cosmicclp'}
 #' @return A \code{data.frame} containing the combined genetic data for the requested cell lines
 #' @export
 makeGeneticVsGeneticDataFrame <- function(con, cell_lines, gene1, gene2, data_type1, data_type2) {
