@@ -7,6 +7,11 @@
 #' @export
 plotRespVsRespPairs <- function(df) {
 
+  #check that there are least 2 ids!
+  if(length(unique(df$ID)) < 2) {
+    stop('Need at least one response variable in the supplied data frame')
+  }
+
   plot_data <- df %>%
     inner_join(df, by=c('CCLE_name', 'tissue')) %>%
     dplyr::select(-starts_with('Type'), -starts_with('original'), -starts_with('subtype')) %>%

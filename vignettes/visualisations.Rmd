@@ -225,6 +225,12 @@ Text
     plotRespVsRespPairs(df)
 ```
 
+Also a shiny app:
+
+```{r eval=FALSE}
+    shinyRespVsRespApp(con=full_con)
+```
+
 ## Future directions
 
 To do:   

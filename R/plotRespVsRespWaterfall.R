@@ -30,6 +30,7 @@ plotRespVsRespWaterfall <- function(df) {
     scale_x_discrete(limits=rev(plot_data$CCLE_name)) +
     #scale_y_log10(breaks=c(10,100,1000,10000)) +
     scale_fill_manual(values=mypal) +
+    ggtitle(sprintf('Waterfall plot for %s',selected_id)) +
     theme_bw() +
     theme(#axis.text.x = element_text(size=rel(1.2), angle=90, hjust=1, vjust=0),
       axis.title.y = element_text(size=rel(1)),
