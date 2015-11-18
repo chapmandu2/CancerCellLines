@@ -4,7 +4,7 @@
 \alias{getTissueCellLines}
 \title{Convert tissue to cell lines}
 \usage{
-getTissueCellLines(con, tissue_id)
+getTissueCellLines(con, tissue_id, tissue_info = "ccle")
 }
 \arguments{
 \item{con}{A \code{SQLiteConnection} object to the database}

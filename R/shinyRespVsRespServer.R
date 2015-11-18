@@ -4,9 +4,9 @@ shinyRespVsRespServer <- function(input, output, con, drug_df=NULL) {
   proc_cls <- reactive({
 
     if (is.null(drug_df)) {
-      intersect(getTissueCellLines(con, input$tissue), proc_resp_data()$CCLE_name)
+      intersect(getTissueCellLines(con, input$tissue, input$tissue_option), proc_resp_data()$CCLE_name)
     } else {
-      intersect(getTissueCellLines(con, input$tissue), proc_resp_data()$CCLE_name)
+      intersect(getTissueCellLines(con, input$tissue, input$tissue_option), proc_resp_data()$CCLE_name)
     }
 
   })
@@ -35,7 +35,7 @@ shinyRespVsRespServer <- function(input, output, con, drug_df=NULL) {
                                cell_lines=proc_cls(),
                                drugs=input$respid,
                                resp_type=ifelse(is.null(drug_df),'ccle', 'custom'),
-                               tissue_info = 'ccle',
+                               tissue_info = input$tissue_option,
                                drug_df = drug_df)
   })
 
@@ -48,13 +48,25 @@ shinyRespVsRespServer <- function(input, output, con, drug_df=NULL) {
   #make a reactive tissue selection UI
   output$tissuesUI <- renderUI({
 
-    tissues.df <- src_sqlite(con@dbname) %>%
-      tbl('ccle_sampleinfo') %>%
-      filter(CCLE_name %in% proc_resp_data()$CCLE_name) %>%
-      transmute(tissue=Site_primary) %>%
-      collect %>%
-      distinct() %>%
-      arrange(tissue)
+    if (input$tissue_option == 'ccle') {
+      tissues.df <- src_sqlite(con@dbname) %>%
+        tbl('ccle_sampleinfo') %>%
+        filter(CCLE_name %in% proc_resp_data()$CCLE_name) %>%
+        transmute(tissue=Site_primary) %>%
+        collect %>%
+        distinct() %>%
+        arrange(tissue)
+
+    } else {
+      tissues.df <- src_sqlite(con@dbname) %>%
+        tbl('cell_line_ids') %>%
+        filter(unified_id %in% proc_resp_data()$CCLE_name & id_type == 'eurofins') %>%
+        transmute(tissue) %>%
+        collect %>%
+        distinct() %>%
+        arrange(tissue)
+
+    }
 
 
     tissues <- tissues.df$tissue
