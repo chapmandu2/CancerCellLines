@@ -1,16 +1,12 @@
 Package: CancerCellLines
 Type: Package
 Title: Provides data, functions and (maybe) classes for accessing public domain cancer cell line data
-Version: 0.5.2
-Date: 2015-11-16
+Version: 0.6.0
+Date: 2015-11-18
 Author: Phil Chapman
 Maintainer: <phil.chapman@cruk.manchester.ac.uk>
 Description: Provides a framework for scientists working with cancer cell lines to access, analyse and visualise public genomics and drug sensitivity data easily in R, as well as integrate their own cell line drug screening data.  Note: likely to be superceded by biocMultiAssay package!
 License: Artistic-2.0
 LazyData: TRUE
-Depends: R (>= 3.0.1), dplyr, readxl, readr, tidyr, scales, ggplot2, shiny
-Imports:
-  DBI,
-  RSQLite,
-  reshape2
-Suggests:
+Depends: R (>= 3.0.1), dplyr, readxl, readr, tidyr, scales, ggplot2, shiny, DBI, RSQLite, reshape2
+Suggests: RColorBrewer

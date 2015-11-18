@@ -10,9 +10,9 @@
 #' @export
 getResponseData <- function(src, drugs, cell_lines, resp_type='ccle') {
 
-  if (class(src) == 'SQLiteConnection' & resp_type == 'ccle') {
+  if ('SQLiteConnection' %in% class(src) & resp_type == 'ccle') {
     getDrugData_CCLE(src, drugs, cell_lines)
-  } else if (class(src) == 'data.frame' & resp_type == 'custom') {
+  } else if ('data.frame' %in% class(src)  & resp_type == 'custom') {
     getDrugData_custom(src, drugs, cell_lines)
   } else {
     stop('Check ?getResponseData to ensure you are passing the correct options into src')
