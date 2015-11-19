@@ -17,7 +17,7 @@ plotRespVsRespWaterfall <- function(df) {
     }
 
   #sort plot data
-  plot_data <- df %>% arrange(tissue, desc(value)) %>% filter(!is.na(value))
+  plot_data <- df %>% arrange(tissue, desc(value)) %>% filter(!is.na(tissue) & !is.na(value))
 
   #make a custom pallete for cell lines
   require(RColorBrewer)
@@ -26,8 +26,8 @@ plotRespVsRespWaterfall <- function(df) {
   mypal <- sample(colorRampPalette(mypal)(length(unique(plot_data$tissue))))
 
   #do waterfall plot ordered by potency
-  histo_plot <- ggplot(plot_data, aes(x=CCLE_name, y=value)) + geom_bar(stat='identity', aes(fill = tissue)) +
-    scale_x_discrete(limits=rev(plot_data$CCLE_name)) +
+  histo_plot <- ggplot(plot_data, aes(x=native_id, y=value)) + geom_bar(stat='identity', aes(fill = tissue)) +
+    scale_x_discrete(limits=rev(plot_data$native_id)) +
     #scale_y_log10(breaks=c(10,100,1000,10000)) +
     scale_fill_manual(values=mypal) +
     ggtitle(sprintf('Waterfall plot for %s',selected_id)) +

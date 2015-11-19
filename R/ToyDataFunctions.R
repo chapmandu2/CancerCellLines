@@ -114,7 +114,7 @@ maketoyCCLE_drugresponse <- function (fn, pattern='_BREAST', outdir=getwd()) {
 
 maketoyCellLineIDs <- function (fn, pattern='_BREAST', outdir=getwd()) {
 
-  fn <- '~/BigData/CellLineData/RawData/CellLineIDNormalisationOct15.txt'
+  fn <- '~/BigData/CellLineData/RawData/CellLineIDNormalisationNov15.txt'
   outdir <- '~/Documents/2015 Projects/20150622 CancerCellLine Package/ToyData/'
 
   data <- read.table(fn, header=T, sep='\t')

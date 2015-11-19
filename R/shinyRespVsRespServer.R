@@ -60,7 +60,7 @@ shinyRespVsRespServer <- function(input, output, con, drug_df=NULL) {
     } else {
       tissues.df <- src_sqlite(con@dbname) %>%
         tbl('cell_line_ids') %>%
-        filter(unified_id %in% proc_resp_data()$CCLE_name & id_type == 'eurofins') %>%
+        filter(unified_id %in% proc_resp_data()$CCLE_name & id_type == input$tissue_option) %>%
         transmute(tissue) %>%
         collect %>%
         distinct() %>%

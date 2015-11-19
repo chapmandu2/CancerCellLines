@@ -180,7 +180,7 @@ cnpath <- '~/BigData/CellLineData/RawData/CCLE_copynumber_byGene_2012-09-29.txt'
 hybcappath <- '~/BigData/CellLineData/RawData/CCLE_hybrid_capture1650_hg19_NoCommonSNPs_NoNeutralVariants_CDS_2012.05.07.maf'
 cosmicclppath <- '~/BigData/CellLineData/RawData/CosmicCLP_CompleteExport_v74.tsv'
 drugpath <- '~/BigData/CellLineData/RawData/CCLE_NP24.2009_Drug_data_2012.02.20.csv'
-idspath <- system.file("extdata", "CellLineIDNormalisationOct15.txt", package = "CancerCellLines")
+idspath <- system.file("extdata", "CellLineIDNormalisationNov15.txt", package = "CancerCellLines")
 
 
 ```

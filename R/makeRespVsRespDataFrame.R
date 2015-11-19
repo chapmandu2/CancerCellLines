@@ -6,7 +6,7 @@
 #' @param drugs A vector of compound identifiers
 #' @param cell_lines A vector of cell line identifiers
 #' @param resp_type The type of response data: \code{ccle, custom}
-#' @param tissue_info Source of tissue information: \code{ccle, custom}
+#' @param tissue_info Source of tissue information: custom can be one of any id_type present in the cell_line_ids table: \code{ccle, custom}
 #' @param drug_df A \code{data.frame} containing input for the \code{getDrugData_custom} function
 #' @return A \code{data.frame} containing the response data for the requested compounds and cell lines
 #' @export
@@ -25,15 +25,17 @@ makeRespVsRespDataFrame <- function(con, drugs, cell_lines, resp_type='ccle', ti
   if (tissue_info == 'ccle') {
     cls_df <- src_sqlite(con@dbname) %>%
       tbl('ccle_sampleinfo') %>%
-      transmute(CCLE_name, tissue=Site_primary, subtype=Hist_subtype1) %>%
+      transmute(CCLE_name, native_id=Primary_cell_name, tissue=Site_primary, subtype1=Histology,  subtype2=Hist_subtype1) %>%
       collect
-  } else if (tissue_info == 'custom') {
+  } else  {
     cls_df <- src_sqlite(con@dbname) %>%
       tbl('cell_line_ids') %>%
-      filter(id_type == 'eurofins') %>%
-      transmute(CCLE_name=unified_id, tissue, subtype=NA) %>%
+      filter(id_type == tissue_info) %>%
+      transmute(CCLE_name=unified_id, native_id, tissue, subtype1=hist_primary, subtype2=hist_secondary) %>%
       collect
-  } else {
+  }
+
+  if(nrow(cls_df)==0) {
     stop('tissue_info not valid - see ?makeRespVsRespDataFrame')
   }
 
