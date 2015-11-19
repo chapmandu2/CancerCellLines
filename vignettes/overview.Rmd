@@ -1,7 +1,7 @@
 ---
 title: "Overview Vignette for CancerCellLines Package"
 author: "Phil Chapman"
-date: "November 12, 2015"
+date: "November 18, 2015"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{"Overview Vignette for CancerCellLines Package"}

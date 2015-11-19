@@ -4,7 +4,8 @@
 \alias{plotRespVsGeneticHist}
 \title{Compare response against a genetic feature (histogram)}
 \usage{
-plotRespVsGeneticHist(df, data_type = NULL, facet_option = FALSE)
+plotRespVsGeneticHist(df, data_type = NULL, facet_option = FALSE,
+  label_option = FALSE)
 }
 \arguments{
 \item{df}{A data frame from the \code{makeRespVsGeneticDataFrame} function}

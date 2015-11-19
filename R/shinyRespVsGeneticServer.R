@@ -34,19 +34,32 @@ shinyRespVsGeneticServer <- function(input, output, con, drug_df=NULL) {
                                cell_lines=proc_cls(),
                                drug=input$respid,
                                data_types = input$data_type,
-                               drug_df = drug_df)
+                               drug_df = drug_df,
+                               tissue_info = input$tissue_option)
   })
 
   #make a reactive tissue selection UI
   output$tissuesUI <- renderUI({
 
-    tissues.df <- src_sqlite(con@dbname) %>%
-      tbl('ccle_sampleinfo') %>%
-      filter(CCLE_name %in% proc_resp_data()$CCLE_name) %>%
-      transmute(tissue=Site_primary) %>%
-      collect %>%
-      distinct() %>%
-      arrange(tissue)
+    if (input$tissue_option == 'ccle') {
+      tissues.df <- src_sqlite(con@dbname) %>%
+        tbl('ccle_sampleinfo') %>%
+        filter(CCLE_name %in% proc_resp_data()$CCLE_name) %>%
+        transmute(tissue=Site_primary) %>%
+        collect %>%
+        distinct() %>%
+        arrange(tissue)
+
+    } else {
+      tissues.df <- src_sqlite(con@dbname) %>%
+        tbl('cell_line_ids') %>%
+        filter(unified_id %in% proc_resp_data()$CCLE_name & id_type == input$tissue_option) %>%
+        transmute(tissue) %>%
+        collect %>%
+        distinct() %>%
+        arrange(tissue)
+
+    }
 
 
     tissues <- tissues.df$tissue
@@ -107,7 +120,7 @@ shinyRespVsGeneticServer <- function(input, output, con, drug_df=NULL) {
 
   output$plot2 <- renderPlot({
 
-    plotRespVsGeneticHist(proc_data(), input$data_type, input$facet_option)
+    plotRespVsGeneticHist(proc_data(), input$data_type, input$facet_option, input$label_option)
 
   })
 
