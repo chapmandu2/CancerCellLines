@@ -14,7 +14,7 @@ makeRespVsRespDataFrame(con, drugs, cell_lines, resp_type = "ccle",
 
 \item{resp_type}{The type of response data: \code{ccle, custom}}
 
-\item{tissue_info}{Source of tissue information: custom can be one of any id_type present in the cell_line_ids table: \code{ccle, custom}}
+\item{tissue_info}{Source of tissue information - see ?getTissueInfo}
 
 \item{drug_df}{A \code{data.frame} containing input for the \code{getDrugData_custom} function}
 

@@ -20,7 +20,7 @@ makeRespVsGeneticDataFrame(con, gene, cell_lines, drug, data_types = c("affy",
 
 \item{drug_df}{A \code{data.frame} containing input for the \code{getDrugData_custom} function}
 
-\item{tissue_info}{Source of tissue information: custom can be one of any id_type present in the cell_line_ids table: \code{ccle, custom}}
+\item{tissue_info}{Source of tissue information - see ?getTissueInfo}
 }
 \value{
 A \code{data.frame} containing the drug response and genetic data for the requested compounds and cell lines

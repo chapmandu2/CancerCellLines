@@ -48,26 +48,13 @@ shinyRespVsRespServer <- function(input, output, con, drug_df=NULL) {
   #make a reactive tissue selection UI
   output$tissuesUI <- renderUI({
 
-    if (input$tissue_option == 'ccle') {
-      tissues.df <- src_sqlite(con@dbname) %>%
-        tbl('ccle_sampleinfo') %>%
-        filter(CCLE_name %in% proc_resp_data()$CCLE_name) %>%
-        transmute(tissue=Site_primary) %>%
-        collect %>%
-        distinct() %>%
-        arrange(tissue)
+    tissues.df <- getTissueInfo(con, input$tissue_option)
+    resp_cls <- unique(proc_resp_data()$CCLE_name)
 
-    } else {
-      tissues.df <- src_sqlite(con@dbname) %>%
-        tbl('cell_line_ids') %>%
-        filter(unified_id %in% proc_resp_data()$CCLE_name & id_type == input$tissue_option) %>%
-        transmute(tissue) %>%
-        collect %>%
-        distinct() %>%
-        arrange(tissue)
-
-    }
-
+    tissues.df <- tissues.df %>%
+      dplyr::filter(CCLE_name %in% resp_cls) %>%
+      dplyr::select(tissue) %>%
+      distinct %>% arrange(tissue)
 
     tissues <- tissues.df$tissue
 

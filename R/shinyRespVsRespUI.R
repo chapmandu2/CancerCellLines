@@ -10,8 +10,8 @@ shinyRespVsRespUI <- function () {
                     selected = 1),
         h3("Plot Options:"),
         selectInput("tissue_option", label = "Select tissue categorisation",
-                    choices = list('CCLE' = 'ccle', 'Eurofins'='eurofins'),
-                    selected = 'ccle'),
+                    choices = list('Crude' = 'crude', 'CCLE' = 'ccle', 'Eurofins'='eurofins'),
+                    selected = 'crude'),
         sliderInput('plot_width', label = 'Control plot width', min=200, max=2000, value=600),
         sliderInput('plot_height', label = 'Control plot height', min=200, max=2000, value=400),
         uiOutput('tissuesUI')
