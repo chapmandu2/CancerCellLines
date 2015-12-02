@@ -1,9 +1,12 @@
 #functions to make the toy data
 
-maketoyCCLE_info <- function (fn, pattern='_BREAST', outdir=getwd()) {
+maketoyIDs <- function() {
+  genes <- c('PTEN', 'TP53', 'BRAF', 'NRAS',  'CRAF', 'EGFR', 'SMARCA4', 'KRAS')
+  drugs <- c('AZD6244','PLX4720','PD-0325901', 'Erlotinib', 'Nilotinib', 'Lapatinib')
+  return(list(genes=genes, drugs=drugs))
+}
 
-  fn <- '~/BigData/CellLineData/RawData/CCLE_sample_info_file_2012-10-18.txt'
-  outdir <- '~/Documents/2015 Projects/20150622 CancerCellLine Package/ToyData/'
+maketoyCCLE_info <- function (fn, pattern='_BREAST', outdir=getwd()) {
 
   data <- readLines(fn)
   header <- data[1]
@@ -17,13 +20,11 @@ maketoyCCLE_info <- function (fn, pattern='_BREAST', outdir=getwd()) {
 
 maketoyCCLE_affy <- function (fn, pattern='_BREAST', outdir=getwd()) {
 
-  fn <- '~/BigData/CellLineData/RawData/CCLE_Expression_Entrez_2012-09-29.gct'
-  outdir <- '~/Documents/2015 Projects/20150622 CancerCellLine Package/ToyData/'
-
   data <- read.table(fn,header=T, sep='\t', skip=2, stringsAsFactors = FALSE)
   reqcols <- grepl(pattern, colnames(data))
   reqcols[1:2] <- TRUE
-  data <- data [  , reqcols ]
+  reqrows <- data$Description %in% CancerCellLines:::maketoyIDs()$genes
+  data <- data [ reqrows , reqcols ]
 
   header <- readLines(fn, n=2)
 
@@ -36,13 +37,11 @@ maketoyCCLE_affy <- function (fn, pattern='_BREAST', outdir=getwd()) {
 
 maketoyCCLE_cn <- function (fn, pattern='_BREAST', outdir=getwd()) {
 
-  fn <- '~/BigData/CellLineData/RawData/CCLE_copynumber_byGene_2012-09-29.txt'
-  outdir <- '~/Documents/2015 Projects/20150622 CancerCellLine Package/ToyData/'
-
   data <- read.table(fn,header=T, sep='\t', stringsAsFactors = FALSE)
   reqcols <- grepl(pattern, colnames(data))
   reqcols[1:4] <- TRUE
-  data <- data [  , reqcols ]
+  reqrows <- data$geneName %in% CancerCellLines:::maketoyIDs()$genes
+  data <- data [ reqrows , reqcols ]
 
   outfn <- gsub('.txt', '_toy.txt', basename(fn))
   outpath <- paste0(outdir,outfn)
@@ -54,8 +53,6 @@ maketoyCCLE_cn <- function (fn, pattern='_BREAST', outdir=getwd()) {
 maketoyCCLE_hybcap <- function (fn, pattern='_BREAST', outdir=getwd()) {
 
   require(readr)
-  fn <- '~/BigData/CellLineData/RawData/CCLE_hybrid_capture1650_hg19_NoCommonSNPs_NoNeutralVariants_CDS_2012.05.07.maf'
-  outdir <- '/Users/pchapman/Documents/2015 Projects/20150622 CancerCellLine Package/ToyData/'
 
   data <- read_tsv(fn,
                    col_names=c("Hugo_Symbol", "Entrez_Gene_Id", "Center", "NCBI_Build", "Chromosome",
@@ -75,7 +72,7 @@ maketoyCCLE_hybcap <- function (fn, pattern='_BREAST', outdir=getwd()) {
                    col_types=paste(rep('c', 51), collapse=''),
                    skip=1)
 
-  out <- data [ grepl(pattern, data$Tumor_Sample_Barcode ) , ]
+  out <- data [ grepl(pattern, data$Tumor_Sample_Barcode ) & data$Hugo_Symbol %in% CancerCellLines:::maketoyIDs()$genes , ]
 
   outfn <- gsub('.maf', '_toy.maf', basename(fn))
   write.table( out, paste0(outdir,outfn), row.names = FALSE, sep='\t')
@@ -85,12 +82,9 @@ maketoyCCLE_hybcap <- function (fn, pattern='_BREAST', outdir=getwd()) {
 maketoyCosmicCLP_exome <- function (fn, pattern='_BREAST', outdir=getwd()) {
 
   require(readr)
-  fn <- '~/BigData/CellLineData/RawData/CosmicCLP_CompleteExport_v74.tsv'
-  outdir <- '/Users/pchapman/Documents/2015 Projects/20150622 CancerCellLine Package/ToyData/'
-
   data <- read_tsv(fn)
 
-  out <- data [ grepl(pattern, paste0('_', toupper(data$`Primary site`))) , ]
+  out <- data [ grepl(pattern, paste0('_', toupper(data$`Primary site`))) & data$`Gene name` %in% CancerCellLines:::maketoyIDs()$genes, ]
 
   outfn <- gsub('.tsv', '_toy.tsv', basename(fn))
   write.table( out, paste0(outdir,outfn), row.names = FALSE, sep='\t' )
@@ -99,12 +93,9 @@ maketoyCosmicCLP_exome <- function (fn, pattern='_BREAST', outdir=getwd()) {
 
 maketoyCCLE_drugresponse <- function (fn, pattern='_BREAST', outdir=getwd()) {
 
-  fn <- '~/BigData/CellLineData/RawData/CCLE_NP24.2009_Drug_data_2012.02.20.csv'
-  outdir <- '~/Documents/2015 Projects/20150622 CancerCellLine Package/ToyData/'
-
   data <- readLines(fn)
   header <- data[1]
-  patternMatch <- data [ grepl(pattern, data)  ]
+  patternMatch <- data [ grepl(pattern, data) & grepl(paste0(CancerCellLines:::maketoyIDs()$drugs, collapse='|'), data)  ]
 
   out <- c(header, patternMatch)
   outfn <- gsub('.csv', '_toy.txt', basename(fn))

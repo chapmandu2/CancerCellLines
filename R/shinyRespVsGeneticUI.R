@@ -15,7 +15,7 @@ shinyRespVsGeneticUI <- function () {
                     selected = 1),
         h3("Plot Options:"),
         selectInput("tissue_option", label = "Select tissue categorisation",
-                    choices = list('Crude' = 'crude', 'CCLE' = 'ccle', 'Eurofins'='eurofins'),
+                    choices = list('Crude' = 'crude', 'CCLE' = 'ccle', 'Eurofins'='eurofins', 'Cosmic CLP' = 'cosmic_clp'),
                     selected = 'crude'),
         checkboxInput("facet_option", label = "Facet by tissue"),
         checkboxInput("label_option", label = "Label cell lines", value = FALSE),

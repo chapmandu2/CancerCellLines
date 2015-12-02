@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="author" content="Phil Chapman" />
+
+
+<title>Overview Vignette for CancerCellLines Package</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0A%7D%0Apre%20%7B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+<div id="header">
+<h1 class="title">Overview Vignette for CancerCellLines Package</h1>
+<h4 class="author"><em>Phil Chapman</em></h4>
+<h4 class="date"><em>December 2, 2015</em></h4>
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#data-origin">Data Origin</a></li>
+<li><a href="#creatingconnecting-to-the-toy-dataset">Creating/Connecting to the toy dataset</a></li>
+<li><a href="#querying-the-toy-dataset-with-rsqlite">Querying the toy dataset with RSQLite</a></li>
+<li><a href="#querying-the-toy-dataset-with-dplyr">Querying the toy dataset with dplyr</a></li>
+<li><a href="#convenience-functions-to-export-data">Convenience functions to export data</a></li>
+<li><a href="#combining-different-data-types">Combining different data types</a></li>
+<li><a href="#working-with-the-full-ccle-dataset">Working with the full CCLE dataset</a></li>
+<li><a href="#future-directions">Future directions</a></li>
+<li><a href="#session-info">Session Info</a></li>
+</ul>
+</div>
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>The aim of the CancerCellLines package is to provide standardised code to create and extract data from a SQLite database containing the published genomic data from the Cancer Cell Line Encyclopedia and similar projects. The reason for using a SQLite database is to allow data to be stored on disk, rather than be loaded into memory. This is useful when the user wishes to work with small subsets of the overall dataset, for example just 10-20 genes in 80 lung cell lines. This Vignette will cover the inital set up of the package along with some examples of its use.</p>
+</div>
+<div id="data-origin" class="section level2">
+<h2>Data Origin</h2>
+<p>Data files referred to here can be download from the <a href="http://www.broadinstitute.org/ccle/data/browseData?conversationPropagation=begin">CCLE project website</a>.</p>
+<p>There are also toy examples included in the package:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">list.files</span>(<span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;CancerCellLines&quot;</span>))</code></pre></div>
+<pre><code>##  [1] &quot;CCLE_copynumber_byGene_2012-09-29_toy.txt&quot;                                         
+##  [2] &quot;CCLE_Expression_Entrez_2012-09-29_toy.gct&quot;                                         
+##  [3] &quot;CCLE_hybrid_capture1650_hg19_NoCommonSNPs_NoNeutralVariants_CDS_2012.05.07_toy.maf&quot;
+##  [4] &quot;CCLE_NP24.2009_Drug_data_2012.02.20_toy.txt&quot;                                       
+##  [5] &quot;CCLE_sample_info_file_2012-10-18_toy.txt&quot;                                          
+##  [6] &quot;CellLineIDNormalisationNov15_toy.txt&quot;                                              
+##  [7] &quot;CellLineIDNormalisationNov15.txt&quot;                                                  
+##  [8] &quot;CosmicCLP_CompleteExport_v74_toy.tsv&quot;                                              
+##  [9] &quot;Dietlein2014_supp_table_1.txt&quot;                                                     
+## [10] &quot;scale_colours.txt&quot;                                                                 
+## [11] &quot;toy.db&quot;</code></pre>
+</div>
+<div id="creatingconnecting-to-the-toy-dataset" class="section level2">
+<h2>Creating/Connecting to the toy dataset</h2>
+<p>Either make a toy database from scratch using the convenience function <code>makeToyDB</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">test_db &lt;-<span class="st"> </span><span class="kw">makeToyDB</span>()</code></pre></div>
+<pre><code>## Parse the gene expression data file
+## Writing to database
+## Indexing the table
+## Finished importing affy data
+## Parse the copy number data file
+## Writing to database
+## Indexing the table
+## Finished importing cn data
+## Parse the Cosmic CLP exome data file
+## Write the data to the database
+## Indexing the table
+## Finished importing Cosmic CLP exome sequencing data</code></pre>
+<pre><code>## [1] &quot;A database of toy data has successfully been created and a connector returned&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">test_db</code></pre></div>
+<pre><code>## &lt;SQLiteConnection&gt;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">test_db@dbname</code></pre></div>
+<pre><code>## [1] &quot;/var/folders/9d/hs3g06m50095p0_tphcpyzy80000gp/T//Rtmpw3ohpn/file2527b9572f3&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dbListTables</span>(test_db)</code></pre></div>
+<pre><code>## [1] &quot;ccle_affy&quot;       &quot;ccle_cn&quot;         &quot;ccle_drug_data&quot;  &quot;ccle_hybcap&quot;    
+## [5] &quot;ccle_sampleinfo&quot; &quot;cell_line_ids&quot;   &quot;cosmicclp_exome&quot;</code></pre>
+<p>Or connect to the one built into the package using the <code>setupSQLite</code> function:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">test_db &lt;-<span class="st"> </span><span class="kw">setupSQLite</span>(<span class="kw">system.file</span>(<span class="st">'extdata/toy.db'</span>, <span class="dt">package=</span><span class="st">&quot;CancerCellLines&quot;</span>))
+test_db</code></pre></div>
+<pre><code>## &lt;SQLiteConnection&gt;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">test_db@dbname</code></pre></div>
+<pre><code>## [1] &quot;/Library/Frameworks/R.framework/Versions/3.2/Resources/library/CancerCellLines/extdata/toy.db&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dbListTables</span>(test_db)</code></pre></div>
+<pre><code>## [1] &quot;ccle_affy&quot;       &quot;ccle_cn&quot;         &quot;ccle_drug_data&quot;  &quot;ccle_hybcap&quot;    
+## [5] &quot;ccle_sampleinfo&quot; &quot;cell_line_ids&quot;   &quot;cosmicclp_exome&quot;</code></pre>
+</div>
+<div id="querying-the-toy-dataset-with-rsqlite" class="section level2">
+<h2>Querying the toy dataset with RSQLite</h2>
+<p>The functions from RSQLite can be used to query data in the normal way:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dbGetQuery</span>(test_db, <span class="st">&quot;select * from ccle_affy limit 10&quot;</span>)</code></pre></div>
+<pre><code>##    ProbeID  Symbol    CCLE_name    Signal
+## 1  1956_at    EGFR NCIH524_LUNG  4.773512
+## 2  3845_at    KRAS NCIH524_LUNG 10.399190
+## 3  4893_at    NRAS NCIH524_LUNG  8.802869
+## 4  5728_at    PTEN NCIH524_LUNG  7.442462
+## 5  6597_at SMARCA4 NCIH524_LUNG 10.429500
+## 6   673_at    BRAF NCIH524_LUNG  6.445456
+## 7  7157_at    TP53 NCIH524_LUNG  7.120139
+## 8  1956_at    EGFR NCIH209_LUNG  5.712198
+## 9  3845_at    KRAS NCIH209_LUNG 10.544760
+## 10 4893_at    NRAS NCIH209_LUNG  9.539366</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dbGetQuery</span>(test_db, <span class="st">&quot;select * from ccle_sampleinfo limit 10&quot;</span>)[,<span class="dv">1</span>:<span class="dv">5</span>]</code></pre></div>
+<pre><code>##        CCLE_name Primary_cell_name Cell_line_aliases Gender Site_primary
+## 1      A549_LUNG              A549                        M         lung
+## 2      ABC1_LUNG             ABC-1                        M         lung
+## 3   AU565_BREAST             AU565                        F       breast
+## 4       BEN_LUNG               BEN                        M         lung
+## 5    BT20_BREAST             BT-20                        F       breast
+## 6   BT474_BREAST            BT-474                        F       breast
+## 7   BT483_BREAST            BT-483                        F       breast
+## 8   BT549_BREAST            BT-549                        F       breast
+## 9  CAL120_BREAST           CAL-120                        F       breast
+## 10   CAL12T_LUNG           CAL-12T                        M         lung</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dbGetQuery</span>(test_db, <span class="st">&quot;select Symbol, t1.CCLE_name, Signal, Site_primary, Hist_subtype1 from ccle_affy as t1 </span>
+<span class="st">                      inner join ccle_sampleinfo t2 on t1.CCLE_name = t2.CCLE_name</span>
+<span class="st">                      where t2.Hist_subtype1 == 'ductal_carcinoma'</span>
+<span class="st">                      order by Symbol desc</span>
+<span class="st">                      limit 10&quot;</span>)</code></pre></div>
+<pre><code>##    Symbol         CCLE_name   Signal Site_primary    Hist_subtype1
+## 1    TP53       KPL1_BREAST 8.952216       breast ductal_carcinoma
+## 2    TP53      HDQP1_BREAST 5.294608       breast ductal_carcinoma
+## 3    TP53    UACC893_BREAST 5.066705       breast ductal_carcinoma
+## 4    TP53    HCC1599_BREAST 5.015617       breast ductal_carcinoma
+## 5    TP53    HCC1500_BREAST 7.630229       breast ductal_carcinoma
+## 6    TP53 MDAMB134VI_BREAST 5.707668       breast ductal_carcinoma
+## 7    TP53     CAL148_BREAST 9.157586       breast ductal_carcinoma
+## 8    TP53    UACC812_BREAST 6.639146       breast ductal_carcinoma
+## 9    TP53    HCC1806_BREAST 6.110553       breast ductal_carcinoma
+## 10   TP53      JIMT1_BREAST 9.691416       breast ductal_carcinoma</code></pre>
+<p>Indexing the database allows fast retrieval even when the dataset gets large - more later.</p>
+<p>However, writing the SQL yourself can get inconvenient if you want to retrieve several genes or cell lines:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dbGetQuery</span>(test_db, <span class="st">&quot;select * from ccle_affy </span>
+<span class="st">                      where symbol IN ('PTEN', 'TP53', 'BRAF' ) and </span>
+<span class="st">                            CCLE_name IN ('BT474_BREAST', 'MDAMB468_BREAST') </span>
+<span class="st">                      limit 10&quot;</span>)</code></pre></div>
+<pre><code>##   ProbeID Symbol       CCLE_name   Signal
+## 1  673_at   BRAF    BT474_BREAST 6.844845
+## 2  673_at   BRAF MDAMB468_BREAST 6.335567
+## 3 5728_at   PTEN    BT474_BREAST 9.582697
+## 4 5728_at   PTEN MDAMB468_BREAST 8.200749
+## 5 7157_at   TP53    BT474_BREAST 8.565303
+## 6 7157_at   TP53 MDAMB468_BREAST 9.301550</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">symbols &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">'PTEN'</span>, <span class="st">'TP53'</span>, <span class="st">'BRAF'</span>)
+cell_lines &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">'BT474_BREAST'</span>, <span class="st">'MDAMB468_BREAST'</span>) 
+symbols.sql &lt;-<span class="st"> </span><span class="kw">paste</span>(symbols, <span class="dt">collapse=</span><span class="st">&quot;','&quot;</span>)
+cell_lines.sql &lt;-<span class="st"> </span><span class="kw">paste</span>(cell_lines, <span class="dt">collapse=</span><span class="st">&quot;','&quot;</span>)
+
+<span class="kw">dbGetQuery</span>(test_db, <span class="kw">sprintf</span>(<span class="st">&quot;select * from ccle_affy </span>
+<span class="st">                      where symbol IN ('%s' ) and </span>
+<span class="st">                            CCLE_name IN ('%s') </span>
+<span class="st">                      limit 10&quot;</span>, symbols.sql, cell_lines.sql))</code></pre></div>
+<pre><code>##   ProbeID Symbol       CCLE_name   Signal
+## 1  673_at   BRAF    BT474_BREAST 6.844845
+## 2  673_at   BRAF MDAMB468_BREAST 6.335567
+## 3 5728_at   PTEN    BT474_BREAST 9.582697
+## 4 5728_at   PTEN MDAMB468_BREAST 8.200749
+## 5 7157_at   TP53    BT474_BREAST 8.565303
+## 6 7157_at   TP53 MDAMB468_BREAST 9.301550</code></pre>
+</div>
+<div id="querying-the-toy-dataset-with-dplyr" class="section level2">
+<h2>Querying the toy dataset with dplyr</h2>
+<p>Things become much nicer if you query with dplyr, since this writes the underlying SQL for you:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">con &lt;-<span class="st"> </span><span class="kw">src_sqlite</span>(test_db@dbname) 
+ccle_affy &lt;-<span class="st"> </span>con %&gt;%<span class="st"> </span><span class="kw">tbl</span>(<span class="st">'ccle_affy'</span>)
+ccle_affy</code></pre></div>
+<pre><code>## Source: sqlite 3.8.6 [/Library/Frameworks/R.framework/Versions/3.2/Resources/library/CancerCellLines/extdata/toy.db]
+## From: ccle_affy [1,722 x 4]
+## 
+##    ProbeID  Symbol    CCLE_name    Signal
+##      (chr)   (chr)        (chr)     (dbl)
+## 1  1956_at    EGFR NCIH524_LUNG  4.773512
+## 2  3845_at    KRAS NCIH524_LUNG 10.399190
+## 3  4893_at    NRAS NCIH524_LUNG  8.802869
+## 4  5728_at    PTEN NCIH524_LUNG  7.442462
+## 5  6597_at SMARCA4 NCIH524_LUNG 10.429500
+## 6   673_at    BRAF NCIH524_LUNG  6.445456
+## 7  7157_at    TP53 NCIH524_LUNG  7.120139
+## 8  1956_at    EGFR NCIH209_LUNG  5.712198
+## 9  3845_at    KRAS NCIH209_LUNG 10.544760
+## 10 4893_at    NRAS NCIH209_LUNG  9.539366
+## ..     ...     ...          ...       ...</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ccle_sampleinfo &lt;-<span class="st"> </span>con %&gt;%<span class="st"> </span><span class="kw">tbl</span>(<span class="st">'ccle_sampleinfo'</span>)
+ccle_sampleinfo</code></pre></div>
+<pre><code>## Source: sqlite 3.8.6 [/Library/Frameworks/R.framework/Versions/3.2/Resources/library/CancerCellLines/extdata/toy.db]
+## From: ccle_sampleinfo [247 x 13]
+## 
+##        CCLE_name Primary_cell_name Cell_line_aliases Gender Site_primary
+##            (chr)             (chr)             (chr)  (chr)        (chr)
+## 1      A549_LUNG              A549                        M         lung
+## 2      ABC1_LUNG             ABC-1                        M         lung
+## 3   AU565_BREAST             AU565                        F       breast
+## 4       BEN_LUNG               BEN                        M         lung
+## 5    BT20_BREAST             BT-20                        F       breast
+## 6   BT474_BREAST            BT-474                        F       breast
+## 7   BT483_BREAST            BT-483                        F       breast
+## 8   BT549_BREAST            BT-549                        F       breast
+## 9  CAL120_BREAST           CAL-120                        F       breast
+## 10   CAL12T_LUNG           CAL-12T                        M         lung
+## ..           ...               ...               ...    ...          ...
+## Variables not shown: Histology (chr), Hist_subtype1 (chr), Notes (chr),
+##   Source (chr), Expression_arrays (chr), SNP_arrays (chr), Oncomap (chr),
+##   Hybrid_capture_sequencing (chr)</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ccle_sampleinfo %&gt;%<span class="st"> </span>dplyr::<span class="kw">select</span>(CCLE_name, Site_primary, Hist_subtype1) %&gt;%<span class="st"> </span>
+<span class="st">  </span>dplyr::<span class="kw">filter</span>(Hist_subtype1 ==<span class="st"> 'ductal_carcinoma'</span>) %&gt;%
+<span class="st">  </span>dplyr::<span class="kw">inner_join</span>(ccle_affy, <span class="dt">by=</span><span class="st">'CCLE_name'</span>) %&gt;%
+<span class="st">  </span>dplyr::<span class="kw">arrange</span>(<span class="kw">desc</span>(Symbol))</code></pre></div>
+<pre><code>## Source: sqlite 3.8.6 [/Library/Frameworks/R.framework/Versions/3.2/Resources/library/CancerCellLines/extdata/toy.db]
+## From: &lt;derived table&gt; [?? x 6]
+## Arrange: desc(Symbol) 
+## 
+##            CCLE_name Site_primary    Hist_subtype1 ProbeID Symbol   Signal
+##                (chr)        (chr)            (chr)   (chr)  (chr)    (dbl)
+## 1        KPL1_BREAST       breast ductal_carcinoma 7157_at   TP53 8.952216
+## 2       HDQP1_BREAST       breast ductal_carcinoma 7157_at   TP53 5.294608
+## 3     UACC893_BREAST       breast ductal_carcinoma 7157_at   TP53 5.066705
+## 4     HCC1599_BREAST       breast ductal_carcinoma 7157_at   TP53 5.015617
+## 5     HCC1500_BREAST       breast ductal_carcinoma 7157_at   TP53 7.630229
+## 6  MDAMB134VI_BREAST       breast ductal_carcinoma 7157_at   TP53 5.707668
+## 7      CAL148_BREAST       breast ductal_carcinoma 7157_at   TP53 9.157586
+## 8     UACC812_BREAST       breast ductal_carcinoma 7157_at   TP53 6.639146
+## 9     HCC1806_BREAST       breast ductal_carcinoma 7157_at   TP53 6.110553
+## 10      JIMT1_BREAST       breast ductal_carcinoma 7157_at   TP53 9.691416
+## ..               ...          ...              ...     ...    ...      ...</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ccle_affy %&gt;%<span class="st"> </span><span class="kw">filter</span>(symbol %in%<span class="st"> </span>symbols &amp;<span class="st"> </span>CCLE_name %in%<span class="st"> </span>cell_lines)</code></pre></div>
+<pre><code>## Source: sqlite 3.8.6 [/Library/Frameworks/R.framework/Versions/3.2/Resources/library/CancerCellLines/extdata/toy.db]
+## From: ccle_affy [6 x 4]
+## Filter: symbol %in% c(&quot;PTEN&quot;, &quot;TP53&quot;, &quot;BRAF&quot;) &amp; CCLE_name %in%
+##   c(&quot;BT474_BREAST&quot;, &quot;MDAMB468_BREAST&quot;) 
+## 
+##   ProbeID Symbol       CCLE_name   Signal
+##     (chr)  (chr)           (chr)    (dbl)
+## 1  673_at   BRAF    BT474_BREAST 6.844845
+## 2  673_at   BRAF MDAMB468_BREAST 6.335567
+## 3 5728_at   PTEN    BT474_BREAST 9.582697
+## 4 5728_at   PTEN MDAMB468_BREAST 8.200749
+## 5 7157_at   TP53    BT474_BREAST 8.565303
+## 6 7157_at   TP53 MDAMB468_BREAST 9.301550</code></pre>
+</div>
+<div id="convenience-functions-to-export-data" class="section level2">
+<h2>Convenience functions to export data</h2>
+<p>There are a number of convenience functions that assist in executing typical queries. For example, the <code>getAffyData</code> and <code>getCopyNumberData</code> functions can be used to simplify the queries above still further:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">getAffyData</span>(test_db, symbols, cell_lines)</code></pre></div>
+<pre><code>##         CCLE_name   ID Type original    value
+## 1    BT474_BREAST BRAF affy 6.844845 6.844845
+## 2 MDAMB468_BREAST BRAF affy 6.335567 6.335567
+## 3    BT474_BREAST PTEN affy 9.582697 9.582697
+## 4 MDAMB468_BREAST PTEN affy 8.200749 8.200749
+## 5    BT474_BREAST TP53 affy 8.565303 8.565303
+## 6 MDAMB468_BREAST TP53 affy  9.30155 9.301550</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">getCopyNumberData</span>(test_db, symbols, cell_lines)</code></pre></div>
+<pre><code>##         CCLE_name   ID Type original   value
+## 1    BT474_BREAST BRAF   cn   0.4872  0.4872
+## 2 MDAMB468_BREAST BRAF   cn   0.0975  0.0975
+## 3    BT474_BREAST PTEN   cn  -0.2208 -0.2208
+## 4 MDAMB468_BREAST PTEN   cn   0.1157  0.1157
+## 5    BT474_BREAST TP53   cn  -0.2853 -0.2853
+## 6 MDAMB468_BREAST TP53   cn  -0.3893 -0.3893</code></pre>
+<p>Whilst the <code>getHybcapData</code> and <code>getCosmicCLPData</code> functions retrieve the CCLE hybrid capture and Cosmic Cell Line Project sequencing data respectively:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">getHybcapData</span>(test_db, symbols, cell_lines)</code></pre></div>
+<pre><code>## Source: local data frame [6 x 5]
+## 
+##         CCLE_name    ID   Type original value
+##             (chr) (chr)  (chr)    (chr) (dbl)
+## 1    BT474_BREAST  TP53 hybcap  p.E285K     1
+## 2 MDAMB468_BREAST  PTEN hybcap        -     0
+## 3    BT474_BREAST  PTEN hybcap        -     0
+## 4 MDAMB468_BREAST  TP53 hybcap        -     0
+## 5 MDAMB468_BREAST  BRAF hybcap        -     0
+## 6    BT474_BREAST  BRAF hybcap        -     0</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">getCosmicCLPData</span>(test_db, symbols, cell_lines)</code></pre></div>
+<pre><code>## Source: local data frame [6 x 5]
+## 
+##         CCLE_name    ID      Type original value
+##             (chr) (chr)     (chr)    (chr) (dbl)
+## 1    BT474_BREAST  TP53 cosmicclp  p.E285K     1
+## 2 MDAMB468_BREAST  TP53 cosmicclp  p.R273H     1
+## 3    BT474_BREAST  PTEN cosmicclp        -     0
+## 4 MDAMB468_BREAST  PTEN cosmicclp        -     0
+## 5    BT474_BREAST  BRAF cosmicclp        -     0
+## 6 MDAMB468_BREAST  BRAF cosmicclp        -     0</code></pre>
+<p>Note that the CancerCellLines package includes functionality to convert cell line identifiers between different datasets using the <code>cell_line_ids</code> table. This happens transparently in the getCosmicCLPData function:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">con %&gt;%<span class="st"> </span><span class="kw">tbl</span>(<span class="st">'cell_line_ids'</span>) %&gt;%<span class="st"> </span><span class="kw">filter</span>(unified_id %in%<span class="st"> </span>cell_lines)</code></pre></div>
+<pre><code>## Source: sqlite 3.8.6 [/Library/Frameworks/R.framework/Versions/3.2/Resources/library/CancerCellLines/extdata/toy.db]
+## From: cell_line_ids [8 x 8]
+## Filter: unified_id %in% c(&quot;BT474_BREAST&quot;, &quot;MDAMB468_BREAST&quot;) 
+## 
+##        unified_id       native_id     alt_id    id_type tissue
+##             (chr)           (chr)      (chr)      (chr)  (chr)
+## 1    BT474_BREAST    BT474_BREAST     BT-474       CCLE breast
+## 2    BT474_BREAST          BT-474         NA cosmic_clp breast
+## 3    BT474_BREAST          BT-474     946359       gdsc breast
+## 4    BT474_BREAST           BT474         NA   eurofins breast
+## 5 MDAMB468_BREAST MDAMB468_BREAST MDA-MB-468       CCLE breast
+## 6 MDAMB468_BREAST      MDA-MB-468         NA cosmic_clp breast
+## 7 MDAMB468_BREAST      MDA-MB-468     908123       gdsc breast
+## 8 MDAMB468_BREAST      MDA MB 468         NA   eurofins breast
+## Variables not shown: hist_primary (chr), hist_secondary (chr), match_id
+##   (chr)</code></pre>
+<p>Finally, the <code>getDrugData_CCLE</code> function retrieves the CCLE drug response data:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">drugs &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">'Lapatinib'</span>, <span class="st">'AZD6244'</span>, <span class="st">'Nilotinib'</span> )
+<span class="kw">getDrugData_CCLE</span>(test_db, drugs, cell_lines)</code></pre></div>
+<pre><code>##         CCLE_name        ID Type    original    value
+## 1    BT474_BREAST   AZD6244 resp        &lt;NA&gt;       NA
+## 2 MDAMB468_BREAST   AZD6244 resp        &lt;NA&gt;       NA
+## 3    BT474_BREAST Lapatinib resp 8.020292071 5.095810
+## 4 MDAMB468_BREAST Lapatinib resp  2.07880187 5.682187
+## 5    BT474_BREAST Nilotinib resp 8.738396718 5.058568
+## 6 MDAMB468_BREAST Nilotinib resp 3.195904255 5.495406</code></pre>
+<p>Whilst the <code>getDrugData_custom</code> function transforms an arbitrary data frame with the field names below into the standardised data frame:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(dietlein_data)
+<span class="kw">head</span>(dietlein_data)</code></pre></div>
+<pre><code>##                unified_id compound_id endpoint  original  value
+## 1               A375_SKIN     KU60648    pGI50  810.9611 -2.909
+## 2               A549_LUNG     KU60648    pGI50  609.5369 -2.785
+## 3 COLO205_LARGE_INTESTINE     KU60648    pGI50 1233.1048 -3.091
+## 4 COLO320_LARGE_INTESTINE     KU60648    pGI50  903.6495 -2.956
+## 5             DMS114_LUNG     KU60648    pGI50  313.3286 -2.496
+## 6               DV90_LUNG     KU60648    pGI50  229.6149 -2.361</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">getDrugData_custom</span>(dietlein_data, <span class="dt">drugs =</span> <span class="st">'KU60648_pGI50'</span>, <span class="dt">cell_lines =</span> <span class="kw">c</span>(<span class="st">'DMS114_LUNG'</span>, <span class="st">'A549_LUNG'</span>))</code></pre></div>
+<pre><code>##     CCLE_name            ID Type original  value
+## 1   A549_LUNG KU60648_pGI50 resp 609.5369 -2.785
+## 2 DMS114_LUNG KU60648_pGI50 resp 313.3286 -2.496</code></pre>
+</div>
+<div id="combining-different-data-types" class="section level2">
+<h2>Combining different data types</h2>
+<p>These functions all have a standard output format which means that data from different assay types can be merged and plotted or analysed together.</p>
+<p>The <code>makeTallDataFrame</code> function does this merging in a standard way and returns the the data in a ‘tidy’ format that is useful for plotting in ggplot2 or further manipulation with tidyr.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">makeTallDataFrame</span>(test_db, symbols, cell_lines, drugs)</code></pre></div>
+<pre><code>## Source: local data frame [30 x 5]
+## 
+##          CCLE_name    ID   Type original    value
+##              (chr) (chr)  (chr)    (chr)    (dbl)
+## 1     BT474_BREAST  BRAF   affy 6.844845 6.844845
+## 2  MDAMB468_BREAST  BRAF   affy 6.335567 6.335567
+## 3     BT474_BREAST  PTEN   affy 9.582697 9.582697
+## 4  MDAMB468_BREAST  PTEN   affy 8.200749 8.200749
+## 5     BT474_BREAST  TP53   affy 8.565303 8.565303
+## 6  MDAMB468_BREAST  TP53   affy  9.30155 9.301550
+## 7     BT474_BREAST  TP53 hybcap  p.E285K 1.000000
+## 8  MDAMB468_BREAST  PTEN hybcap        - 0.000000
+## 9     BT474_BREAST  PTEN hybcap        - 0.000000
+## 10 MDAMB468_BREAST  TP53 hybcap        - 0.000000
+## ..             ...   ...    ...      ...      ...</code></pre>
+<p>The <code>makeWideFromTallDataFrame</code> function can take the output from <code>makeTallDataFrame</code> and create a wide or matrix-like data frame which is a conveninent input for modelling packages such as caret.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my_df &lt;-<span class="st"> </span><span class="kw">makeTallDataFrame</span>(test_db, symbols, cell_lines, drugs)
+<span class="kw">makeWideFromTallDataFrame</span>(my_df)</code></pre></div>
+<pre><code>## Source: local data frame [2 x 16]
+## 
+##         CCLE_name AZD6244_resp Lapatinib_resp Nilotinib_resp BRAF_affy
+##             (chr)        (dbl)          (dbl)          (dbl)     (dbl)
+## 1    BT474_BREAST           NA       5.095810       5.058568  6.844845
+## 2 MDAMB468_BREAST           NA       5.682187       5.495406  6.335567
+## Variables not shown: BRAF_cn (dbl), BRAF_cosmicclp (dbl), BRAF_hybcap
+##   (dbl), PTEN_affy (dbl), PTEN_cn (dbl), PTEN_cosmicclp (dbl), PTEN_hybcap
+##   (dbl), TP53_affy (dbl), TP53_cn (dbl), TP53_cosmicclp (dbl), TP53_hybcap
+##   (dbl)</code></pre>
+<p>Finally, there is the <code>makeWideDataFrame</code> function which generates a wide data frame directly.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">makeWideDataFrame</span>(test_db, symbols, cell_lines, drugs)</code></pre></div>
+<pre><code>## Source: local data frame [2 x 16]
+## 
+##         CCLE_name AZD6244_resp Lapatinib_resp Nilotinib_resp BRAF_affy
+##             (chr)        (dbl)          (dbl)          (dbl)     (dbl)
+## 1    BT474_BREAST           NA       5.095810       5.058568  6.844845
+## 2 MDAMB468_BREAST           NA       5.682187       5.495406  6.335567
+## Variables not shown: BRAF_cn (dbl), BRAF_cosmicclp (dbl), BRAF_hybcap
+##   (dbl), PTEN_affy (dbl), PTEN_cn (dbl), PTEN_cosmicclp (dbl), PTEN_hybcap
+##   (dbl), TP53_affy (dbl), TP53_cn (dbl), TP53_cosmicclp (dbl), TP53_hybcap
+##   (dbl)</code></pre>
+<p>The <code>data_types</code> parameter can be used to control which data types are returned, and the <code>drug_df</code> parameter is used to provide custom drug information as per the <code>getDrugData_custom</code> function description above</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">makeWideDataFrame</span>(test_db, symbols, cell_lines, drugs, <span class="dt">data_types=</span><span class="kw">c</span>(<span class="st">'hybcap'</span>, <span class="st">'affy'</span>, <span class="st">'resp'</span>))</code></pre></div>
+<pre><code>## Source: local data frame [2 x 10]
+## 
+##         CCLE_name AZD6244_resp Lapatinib_resp Nilotinib_resp BRAF_affy
+##             (chr)        (dbl)          (dbl)          (dbl)     (dbl)
+## 1    BT474_BREAST           NA       5.095810       5.058568  6.844845
+## 2 MDAMB468_BREAST           NA       5.682187       5.495406  6.335567
+## Variables not shown: BRAF_hybcap (dbl), PTEN_affy (dbl), PTEN_hybcap
+##   (dbl), TP53_affy (dbl), TP53_hybcap (dbl)</code></pre>
+</div>
+<div id="working-with-the-full-ccle-dataset" class="section level2">
+<h2>Working with the full CCLE dataset</h2>
+<p>The full CCLE dataset is not included in this package due to reasons of data size and because permission for data re-distribution has not yet been sought. However, the instructions below will demonstrate how this is done:</p>
+<p>Define where the data is to be stored/found. Files are downloaded from the <a href="http://www.broadinstitute.org/ccle/data/browseData?conversationPropagation=begin">CCLE project website</a> and <a href="http://cancer.sanger.ac.uk/cell_lines/download">COSMIC Cell Line Project website</a>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dbpath &lt;-<span class="st"> '~/BigData/CellLineData/CancerCellLines.db'</span>
+infopath &lt;-<span class="st"> '~/BigData/CellLineData/RawData/CCLE_sample_info_file_2012-10-18.txt'</span>
+affypath &lt;-<span class="st"> '~/BigData/CellLineData/RawData/CCLE_Expression_Entrez_2012-09-29.gct'</span>
+cnpath &lt;-<span class="st"> '~/BigData/CellLineData/RawData/CCLE_copynumber_byGene_2012-09-29.txt'</span>
+hybcappath &lt;-<span class="st"> '~/BigData/CellLineData/RawData/CCLE_hybrid_capture1650_hg19_NoCommonSNPs_NoNeutralVariants_CDS_2012.05.07.maf'</span>
+cosmicclppath &lt;-<span class="st"> '~/BigData/CellLineData/RawData/CosmicCLP_CompleteExport_v74.tsv'</span>
+drugpath &lt;-<span class="st"> '~/BigData/CellLineData/RawData/CCLE_NP24.2009_Drug_data_2012.02.20.csv'</span>
+idspath &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;CellLineIDNormalisationNov15.txt&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;CancerCellLines&quot;</span>)</code></pre></div>
+<p>Set up the SQLite database and run the import functions</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  full_con &lt;-<span class="st"> </span><span class="kw">setupSQLite</span>(dbpath)
+  <span class="kw">importCCLE_info</span>(infopath , full_con)
+  <span class="kw">importCCLE_hybcap</span>(hybcappath , full_con)
+  <span class="kw">importCosmicCLP_exome</span>(cosmicclppath, full_con)
+  <span class="kw">importCCLE_drugresponse</span>(drugpath , full_con)
+  <span class="kw">importCCLE_affy</span>(affypath , full_con)
+  <span class="kw">importCCLE_cn</span>(cnpath, full_con)
+  <span class="kw">importCellLineIDs</span>(idspath, full_con)</code></pre></div>
+<p>This process should take 3-4 minutes with most of the time spent importing the affymetrix data.</p>
+<p>Now use the database as per the toy example. Thanks to the speed of SQLite and the wonders of indexing, data retrieval should still be just as fast even though the ccle_affy table contains around 20 million data points.</p>
+<p>To really put it through its paces try retrieving data from 2000 genes in 200 cell lines as below:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">    dplyr_con &lt;-<span class="st"> </span><span class="kw">src_sqlite</span>(full_con@dbname)
+    
+    <span class="co">#get 2000 random genes</span>
+    random_genes &lt;-<span class="st"> </span>dplyr_con %&gt;%<span class="st"> </span><span class="kw">tbl</span>(<span class="st">'ccle_affy'</span>) %&gt;%<span class="st"> </span><span class="kw">group_by</span>(Symbol) %&gt;%<span class="st"> </span><span class="kw">summarise</span>(<span class="dt">N=</span><span class="kw">n</span>()) %&gt;%<span class="st"> </span>
+<span class="st">      </span><span class="kw">ungroup</span>() %&gt;%<span class="st"> </span>collect %&gt;%<span class="st"> </span>
+<span class="st">      </span>dplyr::<span class="kw">filter</span>(N &lt;<span class="st"> </span><span class="kw">mean</span>(N)) %&gt;%<span class="st"> </span><span class="kw">sample_n</span>(<span class="dv">2000</span>) %&gt;%<span class="st"> </span>as.data.frame
+    random_genes &lt;-<span class="st"> </span>random_genes$Symbol
+  
+    <span class="co">#get 200 random cell lines</span>
+    random_cell_lines &lt;-<span class="st"> </span>dplyr_con %&gt;%<span class="st"> </span><span class="kw">tbl</span>(<span class="st">'ccle_sampleinfo'</span>) %&gt;%<span class="st"> </span>dplyr::<span class="kw">select</span>(CCLE_name) %&gt;%
+<span class="st">      </span>distinct %&gt;%<span class="st"> </span>collect %&gt;%<span class="st"> </span><span class="kw">sample_n</span>(<span class="dv">200</span>) %&gt;%<span class="st"> </span>as.data.frame
+    random_cell_lines &lt;-<span class="st"> </span>random_cell_lines$CCLE_name
+    
+    <span class="co">#get 10 random compounds</span>
+    random_drugs &lt;-<span class="st"> </span>dplyr_con %&gt;%<span class="st"> </span><span class="kw">tbl</span>(<span class="st">'ccle_drug_data'</span>) %&gt;%<span class="st"> </span>dplyr::<span class="kw">select</span>(Compound) %&gt;%
+<span class="st">      </span>distinct %&gt;%<span class="st"> </span>collect %&gt;%<span class="st"> </span><span class="kw">sample_n</span>(<span class="dv">10</span>) %&gt;%<span class="st"> </span>as.data.frame
+    random_drugs &lt;-<span class="st"> </span>random_drugs$Compound
+    
+    <span class="co">#retrieve the data</span>
+    test_affy &lt;-<span class="st"> </span><span class="kw">getAffyData</span>(full_con, random_genes, random_cell_lines)
+    test_cn &lt;-<span class="st"> </span><span class="kw">getCopyNumberData</span>(full_con, random_genes, random_cell_lines)
+    test_hybcap &lt;-<span class="st"> </span><span class="kw">getHybcapData</span>(full_con, random_genes, random_cell_lines)
+    test_cosmicclp &lt;-<span class="st"> </span><span class="kw">getCosmicCLPData</span>(full_con, random_genes, random_cell_lines)
+    
+    <span class="co">#make a big data frame</span>
+    big_df &lt;-<span class="st"> </span><span class="kw">makeWideDataFrame</span>(full_con, random_genes, random_cell_lines, random_drugs)
+    
+    <span class="co">#without resp data</span>
+    big_df &lt;-<span class="st"> </span><span class="kw">makeWideDataFrame</span>(full_con, random_genes, random_cell_lines, <span class="dt">drugs=</span><span class="ot">NULL</span>, <span class="dt">data_types=</span><span class="kw">c</span>(<span class="st">'affy'</span>, <span class="st">'cn'</span>, <span class="st">'hybcap'</span>, <span class="st">'cosmicclp'</span>))
+    
+    <span class="co">#with custom resp data</span>
+    big_df &lt;-<span class="st"> </span><span class="kw">makeWideDataFrame</span>(full_con, random_genes, <span class="dt">cell_lines =</span> <span class="kw">c</span>(<span class="st">'DMS114_LUNG'</span>, <span class="st">'A549_LUNG'</span>), <span class="dt">drugs =</span> <span class="st">'KU60648_pGI50'</span>, <span class="dt">drug_df =</span> dietlein_data)</code></pre></div>
+<p>This should take no more than 4-5 seconds for each constituent retrieval, and ~10 seconds to make the data frame depending on your hardware (SSD’s will be quicker than HDD’s).</p>
+</div>
+<div id="future-directions" class="section level2">
+<h2>Future directions</h2>
+<p>Future plans are to integrate the thinking of using SQLite for fast on disk subsetting and retrieval with the biocMultiAssay package. The will allow generic extension of the concept to other datasets without having to define import and retrieval functions and database schemas one dataset at a time.</p>
+</div>
+<div id="session-info" class="section level2">
+<h2>Session Info</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">   <span class="kw">sessionInfo</span>() </code></pre></div>
+<pre><code>## R version 3.2.2 (2015-08-14)
+## Platform: x86_64-apple-darwin13.4.0 (64-bit)
+## Running under: OS X 10.9.5 (Mavericks)
+## 
+## locale:
+## [1] en_GB.UTF-8/en_GB.UTF-8/en_GB.UTF-8/C/en_GB.UTF-8/en_GB.UTF-8
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+##  [1] CancerCellLines_0.6.6 reshape2_1.4.1        RSQLite_1.0.0        
+##  [4] DBI_0.3.1             shiny_0.12.2          ggplot2_1.0.1        
+##  [7] scales_0.3.0          tidyr_0.3.1           readr_0.2.2          
+## [10] readxl_0.1.0          dplyr_0.4.3          
+## 
+## loaded via a namespace (and not attached):
+##  [1] Rcpp_0.12.2      knitr_1.11       magrittr_1.5     devtools_1.9.1  
+##  [5] MASS_7.3-45      munsell_0.4.2    xtable_1.8-0     colorspace_1.2-6
+##  [9] R6_2.1.1         stringr_1.0.0    plyr_1.8.3       tools_3.2.2     
+## [13] parallel_3.2.2   grid_3.2.2       gtable_0.1.2     htmltools_0.2.6 
+## [17] lazyeval_0.1.10  yaml_2.1.13      assertthat_0.1   digest_0.6.8    
+## [21] formatR_1.2.1    evaluate_0.8     memoise_0.2.1    mime_0.4        
+## [25] rmarkdown_0.8.1  stringi_1.0-1    httpuv_1.3.3     proto_0.3-10</code></pre>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

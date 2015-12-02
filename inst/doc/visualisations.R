@@ -1,38 +1,13 @@
----
-title: "Visualisations Vignette for CancerCellLines Package"
-author: "Phil Chapman"
-date: "December 2, 2015"
-output: 
-  rmarkdown::html_vignette:
-    toc: true
-    
-vignette: >
-  %\VignetteIndexEntry{Visualisations Vignette for CancerCellLines Package}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
----
-
-
-```{r, echo=FALSE, message=FALSE}
+## ---- echo=FALSE, message=FALSE------------------------------------------
 library(CancerCellLines)
-```
 
-## Introduction
-This Vignette follows on from the Overview vignette and assumes that the user has already set up the SQLite database containing at least the CCLE data - this vignette won't work from the toy database!
-
-## Setup
-Connect to the database and generate SQLiteConnection and dplyr connection objects for convenience.
-```{r}
+## ------------------------------------------------------------------------
 dbpath <- '~/BigData/CellLineData/CancerCellLines.db'
 #dbpath <- system.file('extdata/toy.db', package="CancerCellLines")
 full_con <- setupSQLite(dbpath)
 dplyr_con <- src_sqlite(full_con@dbname)
-```
 
-## Example 1: Melanoma heatmap with MEK and BRAF inhibitors
-We are interested in looking at some important melanoma genes and compounds that act through them  We can use the dplyr interface to easily populate a cell line vector with all of the melanoma cell lines.
-
-```{r}
+## ------------------------------------------------------------------------
     #specify the genes
     ex1_genes <- c('BRAF', 'NRAS', 'CRAF', 'TP53')
   
@@ -45,10 +20,8 @@ We are interested in looking at some important melanoma genes and compounds that
     #get BRAF and MEK inhibitors
     ex1_drugs <- c('AZD6244','PLX4720','PD-0325901')
     
-```
 
-Next we can make data frames for the genes, drugs and cell lines that we're interested int:
-```{r fig.width=6, fig.height=6}
+## ----fig.width=6, fig.height=6-------------------------------------------
     #make a tall frame
     ex1_tall_df <- makeTallDataFrame(full_con, ex1_genes, ex1_cell_lines, ex1_drugs)
     ex1_tall_df
@@ -60,27 +33,16 @@ Next we can make data frames for the genes, drugs and cell lines that we're inte
     #compare the drug activities
     pairs(~AZD6244_resp+PLX4720_resp+`PD-0325901_resp`, ex1_wide_df)
     
-```
-   
-Whilst the wide data frame is useful for modelling, it's the tall data frame that is more useful for plotting since it's in a tidy format (long and thin).  Let's make a heatmap using the built in `plotHeatmap` function:
-```{r fig.width=6, fig.height=6}
+
+## ----fig.width=6, fig.height=6-------------------------------------------
     #make a heatmap!
     plotHeatmap(ex1_tall_df)
     
-```
 
-Cell lines are plotted as rows and features as columns.  The response data is always plotted to the left, with the most sensitive cell lines at the bottom in green, and the least sensitive at the top in red.  Affy and copy number data is plotted from blue (low) to red (high) whilst mutation data is plotted as light colours for wild type and dark colours for mutant.
-
-We also have some degree of control over the order of the x and y axes.  For example, if we want the cell lines to be ordered on the response to PLX4720, we can specify this:
-
-```{r fig.width=6, fig.height=6}
+## ----fig.width=6, fig.height=6-------------------------------------------
     plotHeatmap(ex1_tall_df, order_feature='PLX4720_resp')
-```
 
-## Example 2: EGFR inhibitors vs EGFR mutation status or expression 
-This time we are interested in how the expression and mutation status of EGFR interacts with the response to the EGFR inhibitor, erlotinib.  Let's dive right in using the `makeRespVsGeneticDataFrame` function to make a data frame suitable for the `plotRespVsGeneticHist` and `plotRespVsGeneticScatter` functions:
-
-```{r fig.width=6, fig.height=4}
+## ----fig.width=6, fig.height=4-------------------------------------------
    
     #get all cell lines
     ex2_cell_lines <- dplyr_con %>% tbl('ccle_sampleinfo') %>% 
@@ -100,12 +62,8 @@ This time we are interested in how the expression and mutation status of EGFR in
     #histogram of Erlotinib response coloured by EGFR expression
     plotRespVsGeneticPoint(df, 'affy', FALSE)
     
-```
 
-## Example 3: BRAF inhibitors vs BRAF mutation status
-Now let's do a similar analysis with PLX4720 and BRAF mutation status:
-
-```{r fig.width=6, fig.height=4}
+## ----fig.width=6, fig.height=4-------------------------------------------
 
     #make a data frame for the affy analysis
     df <- makeRespVsGeneticDataFrame(full_con, gene='BRAF',
@@ -120,13 +78,8 @@ Now let's do a similar analysis with PLX4720 and BRAF mutation status:
     #histogram of Erlotinib response coloured by EGFR expression
     plotRespVsGeneticPoint(df, 'hybcap', FALSE)
     
-```
 
-## Example 4: Comparing SMARCA4 expression in SMARCA4 mutated cell lines to wildtype
-
-The GeneticVsGenetic suite of functions and plots allows genetic features to be compared against eachother, rather than against a response variable.  For example, looking at SMARCA4 in lung cancer:
-
-```{r fig.width=6, fig.height=6}
+## ----fig.width=6, fig.height=6-------------------------------------------
     
     #get lung cell lines
     ex4_cell_lines <- dplyr_con %>% tbl('ccle_sampleinfo') %>% filter(Site_primary == 'lung') %>%
@@ -169,44 +122,28 @@ The GeneticVsGenetic suite of functions and plots allows genetic features to be 
                                             gene2='SMARCA4', data_type2='cn') %>% plotGeneticVsGeneticHist(label_option = TRUE)
     
 
-```
 
-## Interactive visualisations
+## ----eval=FALSE----------------------------------------------------------
+#  
+#      dietlein_data_fn <- system.file("extdata", "Dietlein2014_supp_table_1.txt", package = "CancerCellLines")
+#      dietlein_data <- read.table(dietlein_data_fn, header=T, sep='\t', stringsAsFactors=F)
+#      head(dietlein_data)
+#      dietlein_data <- dietlein_data %>%
+#        filter(nchar(CCLE_name) > 1) %>%
+#        transmute(unified_id=CCLE_name, compound_id='KU60648', endpoint='pGI50', original=GI50, value=9-log10(GI50))
+#      head(dietlein_data)
+#  
+#      full_con <- setupSQLite('~/BigData/CellLineData/CancerCellLines.db')
+#      shinyRespVsGeneticApp(con=full_con, drug_df=dietlein_data)
+#  
 
-There are also a series of shiny__ functions for interactive visualisations.  The response data can be fed into the shinyRespVsGeneticApp function as follows:
+## ----eval=FALSE----------------------------------------------------------
+#      shinyRespVsGeneticApp(con=full_con)
 
-```{r eval=FALSE}
-   
-    dietlein_data_fn <- system.file("extdata", "Dietlein2014_supp_table_1.txt", package = "CancerCellLines")
-    dietlein_data <- read.table(dietlein_data_fn, header=T, sep='\t', stringsAsFactors=F)
-    head(dietlein_data)
-    dietlein_data <- dietlein_data %>% 
-      filter(nchar(CCLE_name) > 1) %>% 
-      transmute(unified_id=CCLE_name, compound_id='KU60648', endpoint='pGI50', original=GI50, value=9-log10(GI50))     
-    head(dietlein_data)
+## ----eval=FALSE----------------------------------------------------------
+#      shinyGeneticVsGeneticApp(con=full_con)
 
-    full_con <- setupSQLite('~/BigData/CellLineData/CancerCellLines.db')
-    shinyRespVsGeneticApp(con=full_con, drug_df=dietlein_data)
-     
-```
-
-Alternatively, if a custom dataset isn't defined CCLE will be used:
-
-```{r eval=FALSE}
-    shinyRespVsGeneticApp(con=full_con)
-```
-
-If you are just interested in the GeneticVsGenetic analysis functions then you can launch the `shinyGeneticVsGenetic` shiny app:
-
-```{r eval=FALSE}
-    shinyGeneticVsGeneticApp(con=full_con)    
-```
-
-## Example 5: Comparing response values
-
-Text
-
-```{r fig.width=8, fig.height=8 }
+## ----fig.width=8, fig.height=8-------------------------------------------
     #get all cell lines
     ex5_cell_lines <- dplyr_con %>% tbl('ccle_sampleinfo') %>% 
        collect %>% as.data.frame
@@ -227,23 +164,10 @@ Text
     plotRespVsRespWaterfall(filter(df, grepl('Erlotinib', ID)))
     plotRespVsRespDensity(df)
     plotRespVsRespPairs(df)
-```
 
-Also a shiny app:
+## ----eval=FALSE----------------------------------------------------------
+#      shinyRespVsRespApp(con=full_con)
 
-```{r eval=FALSE}
-    shinyRespVsRespApp(con=full_con)
-```
-
-## Future directions
-
-To do:   
-- GeneticVsGenetic
-- RespVsResp
-
-
-## Session Info
-```{r}
+## ------------------------------------------------------------------------
    sessionInfo() 
-```
 
