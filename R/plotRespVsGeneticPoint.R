@@ -7,7 +7,7 @@
 #' @export
 plotRespVsGeneticPoint <- function(df, data_type=NULL, facet_option=FALSE) {
 
-  plot_data <- df %>% arrange(desc(resp_value))
+  plot_data <- df %>% dplyr::arrange(dplyr::desc(resp_value))
 
   if(data_type %in% c('hybcap', 'cosmicclp')) {
     p <- ggplot(plot_data, aes(x=as.factor(feature_value), y=resp_value) ) +

@@ -8,8 +8,7 @@
 #' @return A \code{SQLiteConnection} object
 #' @export
 setupSQLite <- function ( dbpath=system.file('extdata/toy.db', package="CancerCellLines") ) {
-  require(RSQLite)
-  drv <- dbDriver("SQLite")
-  con <- dbConnect(drv, dbname = dbpath)
+  drv <- RSQLite::SQLite()
+  con <- DBI::dbConnect(drv, dbname = dbpath)
   return(con)
 }

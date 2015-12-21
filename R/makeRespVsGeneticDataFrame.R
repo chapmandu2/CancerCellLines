@@ -18,25 +18,29 @@ makeRespVsGeneticDataFrame <- function(con, gene, cell_lines, drug, data_types=c
                                  cell_lines,
                                  drug,
                                  data_types) %>%
-    transmute(CCLE_name, ID, feature_type=Type, feature_name=paste(ID, Type, sep="_"), feature_value=value, feature_original=original)
+    dplyr::transmute(CCLE_name, ID, feature_type=Type, feature_name=paste(ID, Type, sep="_"), feature_value=value, feature_original=original)
 
   if (is.null(drug_df)) {
     #if no drug data frame provided just use CCLE
-    ccle_drugs.df <- src_sqlite(con@dbname) %>% tbl("ccle_drug_data") %>% select(Compound) %>% distinct %>% collect
+    ccle_drugs.df <- dplyr::src_sqlite(con@dbname) %>%
+      dplyr::tbl("ccle_drug_data") %>%
+      dplyr::select(Compound) %>%
+      dplyr::distinct() %>%
+      dplyr::collect()
     resp_data <- getDrugData_CCLE(con, drug, cell_lines) %>%
-      transmute(CCLE_name, resp_id=ID, resp_value=value)
+      dplyr::transmute(CCLE_name, resp_id=ID, resp_value=value)
   } else {
     #if drug data provided then use that
     resp_data <- getDrugData_custom(drug_df, drug, cell_lines ) %>%
-      transmute(CCLE_name, resp_id=ID, resp_value=value)
+      dplyr::transmute(CCLE_name, resp_id=ID, resp_value=value)
   }
 
   #now get the tissue info depending on selected option
   cls_df <- getTissueInfo(con, tissue_info)
 
   plot_data <- gene_data %>%
-    inner_join(resp_data, by='CCLE_name') %>%
-    inner_join(cls_df, by='CCLE_name')
+    dplyr::inner_join(resp_data, by='CCLE_name') %>%
+    dplyr::inner_join(cls_df, by='CCLE_name')
 
   return(plot_data)
 }

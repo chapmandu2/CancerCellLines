@@ -11,6 +11,6 @@ importCCLE_info <- function ( fn , con )  {
   data <- read.table(fn,header=T, sep='\t')
   colnames(data) <- c('CCLE_name', 'Primary_cell_name', 'Cell_line_aliases', 'Gender', 'Site_primary', 'Histology', 'Hist_subtype1', 'Notes', 'Source', 'Expression_arrays', 'SNP_arrays', 'Oncomap', 'Hybrid_capture_sequencing')
 
-  dbWriteTable(con, "ccle_sampleinfo", data, overwrite=TRUE)
+  DBI::dbWriteTable(con, "ccle_sampleinfo", data, overwrite=TRUE)
 
 }

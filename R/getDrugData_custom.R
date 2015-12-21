@@ -25,7 +25,8 @@ getDrugData_custom <- function(df, drugs, cell_lines) {
     dplyr::filter((compound_id %in% drugs | ID %in% drugs ) & CCLE_name %in% cell_lines) %>%
     dplyr::select(-compound_id) %>% as.data.frame
 
-  outdata <- outdata %>% mutate_each(funs(as.character), -value) %>% mutate_each(funs(as.numeric), value)
+  outdata <- outdata %>% dplyr::mutate_each(dplyr::funs(as.character), -value) %>%
+    dplyr::mutate_each(dplyr::funs(as.numeric), value)
 
   if(nrow(outdata)==0) {
     stop('No data found matching supplied drugs/cell lines')

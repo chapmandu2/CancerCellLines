@@ -25,7 +25,7 @@ makeRespVsRespDataFrame <- function(con, drugs, cell_lines, resp_type='ccle', ti
   cls_df <- getTissueInfo(con, tissue_info)
 
   #now combine
-  out_df <- df %>% left_join(cls_df, by='CCLE_name')
+  out_df <- df %>% dplyr::left_join(cls_df, by='CCLE_name')
   return(out_df)
 
 }

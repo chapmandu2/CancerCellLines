@@ -15,6 +15,7 @@ vignette: >
 
 ```{r, echo=FALSE, message=FALSE}
 library(CancerCellLines)
+library(dplyr)
 ```
 
 ## Introduction
@@ -97,7 +98,7 @@ ccle_sampleinfo %>% dplyr::select(CCLE_name, Site_primary, Hist_subtype1) %>%
   dplyr::inner_join(ccle_affy, by='CCLE_name') %>%
   dplyr::arrange(desc(Symbol))
 
-ccle_affy %>% filter(symbol %in% symbols & CCLE_name %in% cell_lines)
+ccle_affy %>% dplyr::filter(symbol %in% symbols & CCLE_name %in% cell_lines)
 
 ```
 

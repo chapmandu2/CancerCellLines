@@ -10,18 +10,18 @@ plotRespVsRespWaterfall <- function(df) {
   #warning if more than one ID
   if (length(unique(df$ID)) > 1) {
     selected_id <- unique(df$ID)[1]
-    df <- df %>% filter(ID == selected_id)
+    df <- df %>% dplyr::filter(ID == selected_id)
     warning(sprintf('More than one response provided, using %s', selected_id))
   } else {
       selected_id <- unique(df$ID)
     }
 
   #sort plot data
-  plot_data <- df %>% arrange(tissue, desc(value)) %>% filter(!is.na(tissue) & !is.na(value))
+  plot_data <- df %>% dplyr::arrange(tissue, dplyr::desc(value)) %>%
+    dplyr::filter(!is.na(tissue) & !is.na(value))
 
   #make a custom pallete for cell lines
-  require(RColorBrewer)
-  mypal <- brewer.pal(8,'Set2')
+  mypal <- RColorBrewer::brewer.pal(8,'Set2')
   set.seed(813379)
   mypal <- sample(colorRampPalette(mypal)(length(unique(plot_data$tissue))))
 

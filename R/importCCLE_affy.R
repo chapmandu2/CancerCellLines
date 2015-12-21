@@ -8,24 +8,23 @@
 #' @return TRUE or FALSE depending on whether the data has been written successfully
 #' @export
 importCCLE_affy <- function ( fn , con ) {
-  require(reshape2)
 
   message('Parse the gene expression data file')
   data <- read.table(fn,header=T, sep='\t', skip=2)
 
   ###unpivot the expression data
-  data_tall <- melt(data, id.vars =  colnames(data)[1:2])
+  data_tall <- reshape2::melt(data, id.vars =  colnames(data)[1:2])
   colnames(data_tall) <- c('ProbeID', 'Symbol', 'CCLE_name', 'Signal')
 
   #write to db
   message('Writing to database')
-  dbWriteTable(con, "ccle_affy", data_tall, overwrite=TRUE)
+  DBI::dbWriteTable(con, "ccle_affy", data_tall, overwrite=TRUE)
 
   ##index
   message('Indexing the table')
-  dbSendQuery ( con , sprintf(' CREATE INDEX `ccle_affy_symbol` ON `%s` (`Symbol` ASC); ', 'ccle_affy' )   )
-  dbSendQuery ( con , sprintf(' CREATE INDEX `ccle_affy_CCLE_name` ON `%s` (`CCLE_name` ASC); ', 'ccle_affy' )   )
-  dbSendQuery ( con , sprintf(' CREATE INDEX `ccle_affy_symbol_AND_CCLE_name` ON `%s` (`Symbol`,`CCLE_name` ASC); ', 'ccle_affy' )   )
+  DBI::dbSendQuery ( con , sprintf(' CREATE INDEX `ccle_affy_symbol` ON `%s` (`Symbol` ASC); ', 'ccle_affy' )   )
+  DBI::dbSendQuery ( con , sprintf(' CREATE INDEX `ccle_affy_CCLE_name` ON `%s` (`CCLE_name` ASC); ', 'ccle_affy' )   )
+  DBI::dbSendQuery ( con , sprintf(' CREATE INDEX `ccle_affy_symbol_AND_CCLE_name` ON `%s` (`Symbol`,`CCLE_name` ASC); ', 'ccle_affy' )   )
 
   message('Finished importing affy data')
 

@@ -45,7 +45,7 @@ makeTallDataFrame <- function(con, genes, cell_lines, drugs, data_types=c('affy'
     }
 
     #combine
-    all_data <- bind_rows(all_data.list)
+    all_data <- dplyr::bind_rows(all_data.list)
 
     #get rid of cell lines with no response data
     present_cls <- unique(all_data.list[['resp_data']]$CCLE_name)
@@ -56,7 +56,7 @@ makeTallDataFrame <- function(con, genes, cell_lines, drugs, data_types=c('affy'
     }
   } else {
     #combine
-    all_data <- bind_rows(all_data.list)
+    all_data <- dplyr::bind_rows(all_data.list)
   }
 
   return(all_data)

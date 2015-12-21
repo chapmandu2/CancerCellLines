@@ -6,9 +6,10 @@
 #' @param con A \code{SQLiteConnection} object to the database
 #' @return Launches an interactive Shiny application
 #' @export
+#' @import shiny
 shinyRespVsRespApp <- function(con, drug_df=NULL) {
 
-  shinyApp(
+  shiny::shinyApp(
     ui = shinyRespVsRespUI(),
     server = function(input, output) {
       shinyRespVsRespServer(input, output, con, drug_df)

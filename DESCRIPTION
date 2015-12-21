@@ -1,9 +1,8 @@
 Package: CancerCellLines
 Type: Package
-Title: Provides data, functions and (maybe) classes for accessing public domain
-    cancer cell line data
-Version: 0.6.6
-Date: 2015-11-20
+Title: Analysis of cancer cell line data
+Version: 0.6.7
+Date: 2015-12-21
 Author@R: person("Phil", "Chapman", , "phil.chapman@cruk.manchester.ac.uk", c("aut", "cre"))
 Maintainer: <phil.chapman@cruk.manchester.ac.uk>
 Description: Provides a framework for scientists working with cancer cell lines
@@ -14,17 +13,17 @@ License: Artistic-2.0
 LazyData: TRUE
 Depends:
     R (>= 3.0.1),
+    RSQLite
+Imports:
+    ggplot2,
     dplyr,
     readxl,
     readr,
     tidyr,
     scales,
-    ggplot2,
     shiny,
     DBI,
-    RSQLite,
-    reshape2
-Suggests:
+    reshape2,
     RColorBrewer,
     knitr
 VignetteBuilder:

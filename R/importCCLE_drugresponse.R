@@ -11,5 +11,5 @@ importCCLE_drugresponse <- function (fn , con) {
   data <- read.table(fn, header=T, sep=',')
   colnames(data) <- c('CCLE_name', 'Primary_cell_name', 'Compound', 'Target', 'Doses_uM', 'Activity_median', 'Activity_sd', 'Fit_type', 'Num_data', 'EC50_uM', 'IC50_uM', 'Amax', 'Act_area')
 
-  dbWriteTable(con, "ccle_drug_data", data, overwrite=TRUE)
+  DBI::dbWriteTable(con, "ccle_drug_data", data, overwrite=TRUE)
 }

@@ -15,12 +15,18 @@ getCopyNumberData <- function(con, genes, cell_lines) {
                  from ccle_cn
                  where CCLE_name IN ('%s') and Symbol IN ('%s')", cell_lines.sql, genes.sql)
 
-  data <- dbGetQuery(con, sql)
+  data <- DBI::dbGetQuery(con, sql)
 
   #duplicate remove
-  data <- data %>% group_by(ID) %>% mutate(N=n()) %>% ungroup %>% filter(N==median(N)) %>% select(-N) %>% as.data.frame
+  data <- data %>% dplyr::group_by(ID) %>%
+    dplyr::mutate(N=n()) %>%
+    dplyr::ungroup() %>%
+    dplyr::filter(N==median(N)) %>%
+    dplyr::select(-N) %>%
+    as.data.frame
 
-  data <- data %>% mutate_each(funs(as.character), -value) %>% mutate_each(funs(as.numeric), value)
+  data <- data %>% dplyr::mutate_each(dplyr::funs(as.character), -value) %>%
+    dplyr::mutate_each(dplyr::funs(as.numeric), value)
 
   return(data)
 

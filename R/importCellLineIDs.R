@@ -10,5 +10,5 @@ importCellLineIDs <- function (fn , con) {
 
   data <- read.table(fn, header=T, sep='\t')
 
-  dbWriteTable(con, "cell_line_ids", data, overwrite=TRUE)
+  DBI::dbWriteTable(con, "cell_line_ids", data, overwrite=TRUE)
 }

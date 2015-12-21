@@ -9,7 +9,8 @@
 #' @export
 plotGeneticVsGeneticHist <- function(df, facet_option=FALSE, label_option=FALSE) {
 
-  plot_data <- df %>% filter(!is.na(feature_value1)) %>% arrange(desc(feature_value1))
+  plot_data <- df %>% dplyr::filter(!is.na(feature_value1)) %>%
+    dplyr::arrange(desc(feature_value1))
   dt1 <- ifelse(unique(plot_data$feature_type1) %in% c('hybcap', 'cosmicclp'), 'discrete', 'cont')
   dt2 <- ifelse(unique(plot_data$feature_type2) %in% c('hybcap', 'cosmicclp'), 'discrete', 'cont')
 

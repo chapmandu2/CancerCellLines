@@ -7,6 +7,7 @@
 #' @export
 makeWideFromRespVsRespDataFrame <- function(df) {
 
-  df %>% dplyr::select(-Type, -original) %>% spread(ID, value)
+  df %>% dplyr::select(-Type, -original) %>%
+    tidyr::spread(ID, value)
 
 }

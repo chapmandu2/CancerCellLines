@@ -15,6 +15,7 @@ vignette: >
 
 ```{r, echo=FALSE, message=FALSE}
 library(CancerCellLines)
+library(dplyr)
 ```
 
 ## Introduction
@@ -177,13 +178,7 @@ There are also a series of shiny__ functions for interactive visualisations.  Th
 
 ```{r eval=FALSE}
    
-    dietlein_data_fn <- system.file("extdata", "Dietlein2014_supp_table_1.txt", package = "CancerCellLines")
-    dietlein_data <- read.table(dietlein_data_fn, header=T, sep='\t', stringsAsFactors=F)
-    head(dietlein_data)
-    dietlein_data <- dietlein_data %>% 
-      filter(nchar(CCLE_name) > 1) %>% 
-      transmute(unified_id=CCLE_name, compound_id='KU60648', endpoint='pGI50', original=GI50, value=9-log10(GI50))     
-    head(dietlein_data)
+    data(dietlein_data)
 
     full_con <- setupSQLite('~/BigData/CellLineData/CancerCellLines.db')
     shinyRespVsGeneticApp(con=full_con, drug_df=dietlein_data)

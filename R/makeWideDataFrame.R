@@ -17,7 +17,7 @@ makeWideDataFrame <- function(con, genes, cell_lines, drugs, data_types=c('affy'
   all_data <- makeTallDataFrame(con, genes, cell_lines, drugs, data_types, drug_df)
 
   #create matrix
-  output.df <- all_data %>% makeWideFromTallDataFrame
+  output.df <- all_data %>% makeWideFromTallDataFrame()
 
   return(output.df)
 

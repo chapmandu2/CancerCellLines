@@ -9,31 +9,31 @@
 getTissueInfo <- function (con, tissue_info='ccle') {
 
   if (tissue_info == 'ccle') {
-    cls_df <- src_sqlite(con@dbname) %>%
-      tbl('ccle_sampleinfo') %>%
-      transmute(CCLE_name, native_id=Primary_cell_name, tissue=Site_primary, subtype1=Histology,  subtype2=Hist_subtype1) %>%
-      collect
+    cls_df <- dplyr::src_sqlite(con@dbname) %>%
+      dplyr::tbl('ccle_sampleinfo') %>%
+      dplyr::transmute(CCLE_name, native_id=Primary_cell_name, tissue=Site_primary, subtype1=Histology,  subtype2=Hist_subtype1) %>%
+      dplyr::collect()
   } else  if (tissue_info == 'crude') {
     id_type_order_df <- data.frame(id_type=c('CCLE', 'cosmic_clp'), id_type_order=c(1,2), stringsAsFactors = FALSE)
 
-    cls_df <- src_sqlite(con@dbname) %>%
-      tbl('cell_line_ids') %>%
-      collect() %>%
-      transmute(CCLE_name=unified_id, native_id, tissue, subtype1=hist_primary, subtype2=hist_secondary, id_type) %>%
-      left_join(id_type_order_df, by='id_type') %>%
-      group_by(CCLE_name) %>%
-      mutate(rank=min_rank(id_type_order)) %>%
-      ungroup %>%
-      filter(rank == 1) %>%
+    cls_df <- dplyr::src_sqlite(con@dbname) %>%
+      dplyr::tbl('cell_line_ids') %>%
+      dplyr::collect() %>%
+      dplyr::transmute(CCLE_name=unified_id, native_id, tissue, subtype1=hist_primary, subtype2=hist_secondary, id_type) %>%
+      dplyr::left_join(id_type_order_df, by='id_type') %>%
+      dplyr::group_by(CCLE_name) %>%
+      dplyr::mutate(rank=dplyr::min_rank(id_type_order)) %>%
+      dplyr::ungroup() %>%
+      dplyr::filter(rank == 1) %>%
       dplyr::select(CCLE_name, native_id, tissue, subtype1, subtype2) %>%
-      arrange(CCLE_name)
+      dplyr::arrange(CCLE_name)
 
   } else {
-    cls_df <- src_sqlite(con@dbname) %>%
-      tbl('cell_line_ids') %>%
-      filter(id_type == tissue_info) %>%
-      transmute(CCLE_name=unified_id, native_id, tissue, subtype1=hist_primary, subtype2=hist_secondary) %>%
-      collect
+    cls_df <- dplyr::src_sqlite(con@dbname) %>%
+      dplyr::tbl('cell_line_ids') %>%
+      dplyr::filter(id_type == tissue_info) %>%
+      dplyr::transmute(CCLE_name=unified_id, native_id, tissue, subtype1=hist_primary, subtype2=hist_secondary) %>%
+      dplyr::collect()
   }
 
   if(nrow(cls_df)==0) {

@@ -10,10 +10,10 @@
 #' @export
 importCCLE_hybcap <- function ( fn , con ) {
 
-  require(readr)
+
   #fn <- '~/BigData/CellLineData/RawData/CCLE_hybrid_capture1650_hg19_NoCommonSNPs_NoNeutralVariants_CDS_2012.05.07.maf'
 
-  data <- read_tsv(fn,
+  data <- readr::read_tsv(fn,
                     col_names=c("Hugo_Symbol", "Entrez_Gene_Id", "Center", "NCBI_Build", "Chromosome",
                                 "Start_position", "End_position", "Strand", "Variant_Classification", "Variant_Type",
                                 "Reference_Allele", "Tumor_Seq_Allele1", "Tumor_Seq_Allele2",  "dbSNP_RS", "dbSNP_Val_Status",
@@ -23,6 +23,6 @@ importCCLE_hybcap <- function ( fn , con ) {
                     skip=1)
 
 
-  dbWriteTable(con, "ccle_hybcap", as.data.frame(data), overwrite=TRUE)
+  DBI::dbWriteTable(con, "ccle_hybcap", as.data.frame(data), overwrite=TRUE)
 
 }

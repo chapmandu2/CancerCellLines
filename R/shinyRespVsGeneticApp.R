@@ -7,9 +7,10 @@
 #' @param drug_df A data frame containing the drug data
 #' @return Launches an interactive Shiny application
 #' @export
+#' @import shiny
 shinyRespVsGeneticApp <- function(con, drug_df=NULL) {
 
-  shinyApp(
+  shiny::shinyApp(
     ui = shinyRespVsGeneticUI(),
     server = function(input, output) {
       shinyRespVsGeneticServer(input, output, con, drug_df)

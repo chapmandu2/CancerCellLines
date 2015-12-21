@@ -19,19 +19,21 @@ getCosmicCLPData <- function(con, genes, cell_lines) {
                  t2.unified_id IN ('%s') and gene_name IN ('%s')", cell_lines.sql, genes.sql)
 
   #get data
-  data <- dbGetQuery(con, sql)
+  data <- DBI::dbGetQuery(con, sql)
 
   #process variant classifications - only certain types counted as variants
-  data <- data %>% filter(grepl('Missense|Nonsense|Frameshift', mutation_description)) %>%
-    select(-mutation_description) %>% group_by(CCLE_name, ID) %>%
-    summarise(original=paste(mutation_aa, collapse='|'), value=1) %>% ungroup()
+  data <- data %>% dplyr::filter(grepl('Missense|Nonsense|Frameshift', mutation_description)) %>%
+    dplyr::select(-mutation_description) %>%
+    dplyr::group_by(CCLE_name, ID) %>%
+    dplyr::summarise(original=paste(mutation_aa, collapse='|'), value=1) %>%
+    dplyr::ungroup()
 
   #which samples were actually sequenced?
-  tested <- dbGetQuery(con, "select distinct t2.unified_id as CCLE_name
+  tested <- DBI::dbGetQuery(con, "select distinct t2.unified_id as CCLE_name
                        from cosmicclp_exome t1
                        inner join cell_line_ids t2 on t1.sample_name = t2.native_id
                        where t2.id_type = 'cosmic_clp'")
-  tested <- tested %>% filter(CCLE_name %in% cell_lines)
+  tested <- tested %>% dplyr::filter(CCLE_name %in% cell_lines)
   sequenced_ids <- tested$CCLE_name
   notsequenced_ids <- setdiff(cell_lines, sequenced_ids)
 
@@ -53,14 +55,15 @@ getCosmicCLPData <- function(con, genes, cell_lines) {
   }
 
   #get rid of rows in sequenced.df which are duplicated in data
-  sequenced.df <- sequenced.df %>% filter(!( paste(CCLE_name, ID) %in% paste(data$CCLE_name, data$ID) ))
+  sequenced.df <- sequenced.df %>% dplyr::filter(!( paste(CCLE_name, ID) %in% paste(data$CCLE_name, data$ID) ))
 
   #combine hybcap dataframes and add additional standard columns
-  outdata <- bind_rows(data, sequenced.df, notsequenced.df) %>%
-    transmute(CCLE_name, ID, Type='cosmicclp', original, value)
+  outdata <- dplyr::bind_rows(data, sequenced.df, notsequenced.df) %>%
+    dplyr::transmute(CCLE_name, ID, Type='cosmicclp', original, value)
 
   #make sure data types correct
-  outdata <- outdata %>% mutate_each(funs(as.character), -value) %>% mutate_each(funs(as.numeric), value)
+  outdata <- outdata %>% dplyr::mutate_each(dplyr::funs(as.character), -value) %>%
+    dplyr::mutate_each(dplyr::funs(as.numeric), value)
 
   return(outdata)
 
