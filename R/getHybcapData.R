@@ -9,6 +9,10 @@
 #' @export
 getHybcapData <- function(con, genes, cell_lines) {
 
+  #get rid of duplicates
+  genes <- unique(genes)
+  cell_lines <- unique(cell_lines)
+
   #make sql
   genes.sql <- paste(genes, collapse="','")
   cell_lines.sql <- paste(cell_lines, collapse="','")
