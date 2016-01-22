@@ -17,24 +17,24 @@ makeGeneticVsGeneticDataFrame <- function(con, cell_lines, gene1, gene2, data_ty
                                  cell_lines,
                                  drugs=NULL,
                                  data_type1) %>%
-    dplyr::transmute(CCLE_name, gene1=ID, feature_type1=Type, feature_name1=paste(ID, Type, sep="_"), feature_value1=value, feature_original1=original)
+    dplyr::transmute(unified_id, gene1=assayed_id, feature_type1=data_type, feature_name1=paste(assayed_id, data_type, sep="_"), feature_value1=value, feature_original1=original)
 
   gene2_data <- makeTallDataFrame(con,
                                   gene2,
                                   cell_lines,
                                   drugs=NULL,
                                   data_type2) %>%
-    dplyr::transmute(CCLE_name, gene2=ID, feature_type2=Type, feature_name2=paste(ID, Type, sep="_"), feature_value2=value, feature_original2=original)
+    dplyr::transmute(unified_id, gene2=assayed_id, feature_type2=data_type, feature_name2=paste(assayed_id, data_type, sep="_"), feature_value2=value, feature_original2=original)
 
 
   cls.df <- dplyr::src_sqlite(con@dbname) %>%
     dplyr::tbl('ccle_sampleinfo') %>%
-    dplyr::transmute(CCLE_name, tissue=Site_primary) %>%
+    dplyr::transmute(unified_id=CCLE_name, tissue=Site_primary) %>%
     dplyr::collect()
 
   plot_data <- gene1_data %>%
-    dplyr::inner_join(gene2_data, by='CCLE_name') %>%
-    dplyr::left_join(cls.df, by='CCLE_name')
+    dplyr::inner_join(gene2_data, by='unified_id') %>%
+    dplyr::left_join(cls.df, by='unified_id')
 
   return(plot_data)
 }

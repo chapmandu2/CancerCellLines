@@ -11,14 +11,14 @@ getCopyNumberData <- function(con, genes, cell_lines) {
 
   genes.sql <- paste(genes, collapse="','")
   cell_lines.sql <- paste(cell_lines, collapse="','")
-  sql <- sprintf("select CCLE_name, Symbol as ID, 'cn' as Type, log2cn as original, log2cn as value
+  sql <- sprintf("select CCLE_name as unified_id, Symbol as assayed_id, 'cn' as data_type, log2cn as original, log2cn as value
                  from ccle_cn
                  where CCLE_name IN ('%s') and Symbol IN ('%s')", cell_lines.sql, genes.sql)
 
   data <- DBI::dbGetQuery(con, sql)
 
   #duplicate remove
-  data <- data %>% dplyr::group_by(ID) %>%
+  data <- data %>% dplyr::group_by(assayed_id) %>%
     dplyr::mutate(N=n()) %>%
     dplyr::ungroup() %>%
     dplyr::filter(N==median(N)) %>%

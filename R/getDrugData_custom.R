@@ -16,13 +16,13 @@ getDrugData_custom <- function(df, drugs, cell_lines) {
     stop(sprintf('Following required column names not present in supplied data frame: %s', sprintf(paste(missing_columns, collapse=', '))))
   }
 
-  outdata <- df %>% dplyr::transmute(CCLE_name=unified_id,
+  outdata <- df %>% dplyr::transmute(unified_id,
                                      compound_id,
-                                     ID=paste(compound_id, endpoint, sep='_'),
-                                     Type='resp',
+                                     assayed_id=paste(compound_id, endpoint, sep='_'),
+                                     data_type='resp',
                                      original,
                                      value) %>%
-    dplyr::filter((compound_id %in% drugs | ID %in% drugs ) & CCLE_name %in% cell_lines) %>%
+    dplyr::filter((compound_id %in% drugs | assayed_id %in% drugs ) & unified_id %in% cell_lines) %>%
     dplyr::select(-compound_id) %>% as.data.frame
 
   outdata <- outdata %>% dplyr::mutate_each(dplyr::funs(as.character), -value) %>%

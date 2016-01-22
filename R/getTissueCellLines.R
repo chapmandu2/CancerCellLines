@@ -10,14 +10,14 @@
 getTissueCellLines <- function (con, tissue_id, tissue_info='ccle') {
 
   cls.df <- getTissueInfo(con, tissue_info) %>%
-    dplyr::select(CCLE_name, tissue) %>%
+    dplyr::select(unified_id, tissue) %>%
     dplyr::filter(tissue %in% tissue_id)
 
   if(nrow(cls.df) == 0)  {
     warning('No cell lines found for that tissue')
     return(NULL)
   } else {
-    return(cls.df$CCLE_name)
+    return(cls.df$unified_id)
   }
 
 

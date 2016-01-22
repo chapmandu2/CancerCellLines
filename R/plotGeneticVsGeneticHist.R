@@ -20,9 +20,9 @@ plotGeneticVsGeneticHist <- function(df, facet_option=FALSE, label_option=FALSE)
 
   } else if (dt1 =='cont' & dt2 == 'cont' ) {
 
-    p <- ggplot(plot_data, aes(x=CCLE_name, y=feature_value1, fill=scale(feature_value2)) ) +
+    p <- ggplot(plot_data, aes(x=unified_id, y=feature_value1, fill=scale(feature_value2)) ) +
       geom_point(shape=21, size=rel(5)) +
-      scale_x_discrete(limits=plot_data$CCLE_name) +
+      scale_x_discrete(limits=plot_data$unified_id) +
       scale_fill_gradient2(low='blue', mid='white', high='red', name=unique(plot_data$feature_name2)) +
       ylab(unique(plot_data$feature_name1)) +
       theme_bw() + theme(axis.text.x = element_text(size=rel(1), angle=330, hjust=0, vjust=1))
@@ -30,9 +30,9 @@ plotGeneticVsGeneticHist <- function(df, facet_option=FALSE, label_option=FALSE)
 
   } else if (dt1 == 'cont' & dt2 == 'discrete') {
     plot_data <- plot_data %>% mutate(feature_value2=as.factor(feature_value2))
-    p <- ggplot(plot_data, aes(x=CCLE_name, y=feature_value1, fill=feature_value2) ) +
+    p <- ggplot(plot_data, aes(x=unified_id, y=feature_value1, fill=feature_value2) ) +
       geom_point(shape=21, size=rel(5)) +
-      scale_x_discrete(limits=plot_data$CCLE_name) +
+      scale_x_discrete(limits=plot_data$unified_id) +
       scale_fill_discrete(name=unique(plot_data$feature_name2)) +
       ylab(unique(plot_data$feature_name1)) +
       theme_bw() + theme(axis.text.x = element_text(size=rel(1), angle=330, hjust=0, vjust=1))

@@ -153,7 +153,7 @@ wide.df <- df %>% makeWideFromRespVsRespDataFrame()
 head(wide.df)
 
 #now do some plots
-plotRespVsRespWaterfall(filter(df, grepl('Erlotinib', ID)))
+plotRespVsRespWaterfall(filter(df, grepl('Erlotinib', assayed_id)))
 plotRespVsRespDensity(df)
 plotRespVsRespPairs(df)
 

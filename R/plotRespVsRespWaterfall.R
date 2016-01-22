@@ -7,13 +7,13 @@
 #' @export
 plotRespVsRespWaterfall <- function(df) {
 
-  #warning if more than one ID
-  if (length(unique(df$ID)) > 1) {
-    selected_id <- unique(df$ID)[1]
-    df <- df %>% dplyr::filter(ID == selected_id)
+  #warning if more than one assayed_id
+  if (length(unique(df$assayed_id)) > 1) {
+    selected_id <- unique(df$assayed_id)[1]
+    df <- df %>% dplyr::filter(assayed_id == selected_id)
     warning(sprintf('More than one response provided, using %s', selected_id))
   } else {
-      selected_id <- unique(df$ID)
+      selected_id <- unique(df$assayed_id)
     }
 
   #sort plot data

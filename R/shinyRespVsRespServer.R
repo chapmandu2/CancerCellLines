@@ -4,9 +4,9 @@ shinyRespVsRespServer <- function(input, output, con, drug_df=NULL) {
   proc_cls <- reactive({
 
     if (is.null(drug_df)) {
-      intersect(getTissueCellLines(con, input$tissue, input$tissue_option), proc_resp_data()$CCLE_name)
+      intersect(getTissueCellLines(con, input$tissue, input$tissue_option), proc_resp_data()$unified_id)
     } else {
-      intersect(getTissueCellLines(con, input$tissue, input$tissue_option), proc_resp_data()$CCLE_name)
+      intersect(getTissueCellLines(con, input$tissue, input$tissue_option), proc_resp_data()$unified_id)
     }
 
   })
@@ -18,12 +18,12 @@ shinyRespVsRespServer <- function(input, output, con, drug_df=NULL) {
       #if no drug data frame provided just use CCLE
       ccle_drugs.df <- src_sqlite(con@dbname) %>% tbl("ccle_drug_data") %>% select(Compound, CCLE_name) %>% distinct %>% collect
       resp_data <- getDrugData_CCLE(con, unique(ccle_drugs.df$Compound), unique(ccle_drugs.df$CCLE_name)) %>%
-        transmute(CCLE_name, resp_id=ID, resp_value=value)
+        transmute(unified_id, resp_id=assayed_id, resp_value=value)
       return(resp_data)
     } else {
       #if drug data provided then use that
       resp_data <- getDrugData_custom(drug_df, unique(drug_df$compound_id), unique(drug_df$unified_id) ) %>%
-        transmute(CCLE_name, resp_id=ID, resp_value=value)
+        transmute(unified_id, resp_id=assayed_id, resp_value=value)
       return(resp_data)
     }
   })
@@ -49,10 +49,10 @@ shinyRespVsRespServer <- function(input, output, con, drug_df=NULL) {
   output$tissuesUI <- renderUI({
 
     tissues.df <- getTissueInfo(con, input$tissue_option)
-    resp_cls <- unique(proc_resp_data()$CCLE_name)
+    resp_cls <- unique(proc_resp_data()$unified_id)
 
     tissues.df <- tissues.df %>%
-      dplyr::filter(CCLE_name %in% resp_cls) %>%
+      dplyr::filter(unified_id %in% resp_cls) %>%
       dplyr::select(tissue) %>%
       distinct %>% arrange(tissue)
 

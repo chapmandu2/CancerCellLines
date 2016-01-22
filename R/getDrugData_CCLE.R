@@ -11,7 +11,7 @@ getDrugData_CCLE <- function(con, drugs, cell_lines) {
 
   drugs.sql <- paste(drugs, collapse="','")
   cell_lines.sql <- paste(cell_lines, collapse="','")
-  sql <- sprintf("select CCLE_name, Compound as ID, 'resp' as Type, EC50_uM as original
+  sql <- sprintf("select CCLE_name as unified_id, Compound as assayed_id, 'resp' as data_type, EC50_uM as original
                from ccle_drug_data
                where CCLE_name IN ('%s') and Compound IN ('%s')", cell_lines.sql, drugs.sql)
   out <- DBI::dbGetQuery(con, sql)

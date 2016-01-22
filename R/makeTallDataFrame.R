@@ -39,7 +39,7 @@ makeTallDataFrame <- function(con, genes, cell_lines, drugs, data_types=c('affy'
       all_data.list[['resp_data']] <- getResponseData(drug_df, drugs, cell_lines, resp_type='custom')
     }
     #check that all compounds in drugs have been returned, give warning if not
-    missing_resps <- setdiff(drugs,unique(all_data.list[['resp_data']]$ID))
+    missing_resps <- setdiff(drugs,unique(all_data.list[['resp_data']]$assayed_id))
     if (length(missing_resps) != 0) {
       warning(sprintf('No data returned for: %s', paste(missing_resps, collapse=', ')))
     }
@@ -48,9 +48,9 @@ makeTallDataFrame <- function(con, genes, cell_lines, drugs, data_types=c('affy'
     all_data <- dplyr::bind_rows(all_data.list)
 
     #get rid of cell lines with no response data
-    present_cls <- unique(all_data.list[['resp_data']]$CCLE_name)
+    present_cls <- unique(all_data.list[['resp_data']]$unified_id)
     missing_cls <- setdiff(cell_lines, present_cls)
-    all_data <- all_data %>% filter(CCLE_name %in% present_cls)
+    all_data <- all_data %>% filter(unified_id %in% present_cls)
     if (length(missing_cls) != 0) {
       warning(sprintf('No response data for following cell lines: %s', paste(missing_cls, collapse=', ')))
     }

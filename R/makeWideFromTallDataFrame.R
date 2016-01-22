@@ -8,11 +8,11 @@
 makeWideFromTallDataFrame <- function(df) {
 
   #create matrix
-  output.df <- df %>% dplyr::transmute(CCLE_name, fn=paste(ID,Type,sep='_'), value) %>%
+  output.df <- df %>% dplyr::transmute(unified_id, fn=paste(assayed_id,data_type,sep='_'), value) %>%
     tidyr::spread(fn, value)
 
   #reorder columns
-  output.df <- output.df %>% dplyr::select(CCLE_name, ends_with('_resp'), everything())
+  output.df <- output.df %>% dplyr::select(unified_id, ends_with('_resp'), everything())
 
   #make mutation fields into factors
   output.df <- output.df %>% dplyr::mutate_each(dplyr::funs(as.factor), ends_with('_hybcap|_cosmicclp'))

@@ -7,7 +7,7 @@
 #' @export
 plotRespVsRespDensity <- function(df) {
 
-  p <- ggplot(df, aes(x=value, fill=ID, colour=ID)) + geom_density(alpha=0.7) + facet_grid(ID~.) + theme_bw() + theme(legend.position='none')
+  p <- ggplot(df, aes(x=value, fill=assayed_id, colour=assayed_id)) + geom_density(alpha=0.7) + facet_grid(assayed_id~.) + theme_bw() + theme(legend.position='none')
   return(p)
 
 
