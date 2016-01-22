@@ -1,8 +1,8 @@
 Package: CancerCellLines
 Type: Package
 Title: Analysis of cancer cell line data
-Version: 0.7.0
-Date: 2016-01-18
+Version: 0.7.1
+Date: 2016-01-22
 Author@R: person("Phil", "Chapman", , "phil.chapman@cruk.manchester.ac.uk", c("aut", "cre"))
 Maintainer: <phil.chapman@cruk.manchester.ac.uk>
 Description: Provides a framework for scientists working with cancer cell lines
@@ -25,7 +25,8 @@ Imports:
     DBI,
     reshape2,
     RColorBrewer,
-    knitr
+    knitr,
+    DT
 VignetteBuilder:
     knitr
 RoxygenNote: 5.0.1

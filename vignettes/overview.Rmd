@@ -1,7 +1,7 @@
 ---
 title: "Overview Vignette for CancerCellLines Package"
 author: "Phil Chapman"
-date: "December 2, 2015"
+date: "January 22, 2016"
 output: 
   rmarkdown::html_vignette: 
     toc: true

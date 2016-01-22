@@ -1,3 +1,12 @@
+#' shinyGeneticVsGeneticServer
+#'
+#' Create a shiny server for the GeneticsvsGenetic shiny app
+#'
+#' @param input shiny input
+#' @param output shiny output
+#' @param con SQLite connection object
+#'
+#' @return a shiny server
 shinyGeneticVsGeneticServer <- function(input, output, con) {
 
   #get the cell lines for the given tissues
@@ -47,7 +56,7 @@ shinyGeneticVsGeneticServer <- function(input, output, con) {
         mainPanel(plotOutput("plot2", width=input$plot_width, height=input$plot_height),
                   downloadButton('downloadData', 'Download Data'))
       } else {
-        mainPanel(tableOutput('df'),
+        mainPanel(DT::dataTableOutput('df'),
                   downloadButton('downloadData', 'Download Data'))
       }
 
@@ -58,10 +67,10 @@ shinyGeneticVsGeneticServer <- function(input, output, con) {
     sprintf("Tissue is length: %s", length(input$tissue))
   })
 
-  output$df <- renderTable({
+  output$df <- DT::renderDataTable({
     proc_data()
     #get_shiny_cell_lines(con, input$tissue) %>% as.data.frame
-  })
+  }, filter='top')
 
   output$plot1 <- renderPlot({
 
@@ -78,7 +87,7 @@ shinyGeneticVsGeneticServer <- function(input, output, con) {
   output$downloadData <- downloadHandler(
     filename = sprintf("%s_%s_vs_%s_%s_data.txt", input$gene_name1, input$data_type1, input$gene_name2, input$data_type2),
     content = function(file) {
-      write.table (proc_data(), file = file, sep = '\t', row.names = FALSE, col.names=TRUE)
+      write.table (proc_data(), file = file, sep = '\t', row.names = FALSE, col.names=TRUE, na='')
     }
   )
 

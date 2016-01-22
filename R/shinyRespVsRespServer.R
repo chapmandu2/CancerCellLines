@@ -1,3 +1,13 @@
+#' shinyRespVsRespServer
+#'
+#' Create a shiny server for the RespVsResp shiny app
+#'
+#' @param input shiny input
+#' @param output shiny output
+#' @param con SQLite connection object
+#' @param drug_df drug data frame
+#'
+#' @return a shiny server
 shinyRespVsRespServer <- function(input, output, con, drug_df=NULL) {
 
   #get the cell lines for the given tissues
@@ -96,7 +106,7 @@ shinyRespVsRespServer <- function(input, output, con, drug_df=NULL) {
       mainPanel(plotOutput("plot3", width=input$plot_width, height=input$plot_height),
                 downloadButton('downloadData', 'Download Data'))
     } else {
-      mainPanel(tableOutput('df'),
+      mainPanel(DT::dataTableOutput('df'),
                 downloadButton('downloadData', 'Download Data'))
     }
 
@@ -107,9 +117,9 @@ shinyRespVsRespServer <- function(input, output, con, drug_df=NULL) {
     sprintf("Tissue is length: %s", length(input$tissue))
   })
 
-  output$df <- renderTable({
+  output$df <- DT::renderDataTable({
     proc_data_wide()
-  })
+  }, filter='top')
 
   output$plot1 <- renderPlot({
 
@@ -132,7 +142,7 @@ shinyRespVsRespServer <- function(input, output, con, drug_df=NULL) {
   output$downloadData <- downloadHandler(
     filename = sprintf("%s_data.txt",  paste(sample(c(0:9, LETTERS, letters), 10, replace=TRUE), collapse='')),
     content = function(file) {
-      write.table (proc_data_wide(), file = file, sep = '\t', row.names = FALSE, col.names=TRUE)
+      write.table (proc_data_wide(), file = file, sep = '\t', row.names = FALSE, col.names=TRUE, na='')
     }
   )
 
